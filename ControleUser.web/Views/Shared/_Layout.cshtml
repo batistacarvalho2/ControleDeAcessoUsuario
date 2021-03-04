@@ -1,0 +1,94 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - Controle de Usuários</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+</head>
+<body>
+    <div class="navbar navbar-light navbar-fixed-top" style="background-color: #ABC; border-color: #000;">
+       <!--+<div class="navbar navbar-inverse navbar-fixed-top"> -->
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    @Html.ActionLink("Controle de Usuários", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+                </div>
+                <div class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav">
+                        <li>
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                Cadastros
+                                <span class="caret"></span>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li>@Html.ActionLink("Grupos de Produtos", "GruposProduto", "Cadastro")</li>
+                                <li>@Html.ActionLink("Marcas de produtos", "MarcaProduto", "Cadastro")</li>
+                                <li>@Html.ActionLink("Locais de armazenamento", "LocalProduto", "Cadastro")</li>
+                                <li>@Html.ActionLink("Unidade de medida", "UnidadeMedida", "Cadastro")</li>
+                                <li>@Html.ActionLink("Produtos", "Produto", "Cadastro")</li>
+                                <li>@Html.ActionLink("Países", "Pais", "Cadastro")</li>
+                                <li>@Html.ActionLink("Estados", "Estado", "Cadastro")</li>
+                                <li>@Html.ActionLink("Cidade", "Cidade", "Cadastro")</li>
+                                <li>@Html.ActionLink("Fornecedores", "Fornecedor", "Cadastro")</li>
+                                <li>@Html.ActionLink("Perfis de Usuários", "PerfilUsuario", "Cadastro")</li>
+                                <li>@Html.ActionLink("Usuários", "Usuario", "Cadastro")</li>
+                            </ul>
+                        </li>
+                        <li>
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                Operações
+                                <span class="caret"></span>
+                                <ul class="dropdown-menu">
+                                    <li>@Html.ActionLink("Entrada de produtos", "EntradaEstoque", "Operação")</li>
+                                    <li>@Html.ActionLink("Saída de produtos", "SaidaEstoque", "Operação")</li>
+                                    <li>@Html.ActionLink("Lançamento de perdas", "LanPerdaProduto", "Operação")</li>
+                                    <li>@Html.ActionLink("Inventario de estoque", "SaidaEstoque", "Operação")</li>
+                                </ul>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                Relatórios
+                                <span class="caret"></span>
+                                <ul class="dropdown-menu">
+                                    <li>@Html.ActionLink("Sobre", "Sobre", "Home")</li>
+                                </ul>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                Graficos
+                                <span class="caret"></span>
+                                <ul class="dropdown-menu">
+                                    <li>@Html.ActionLink("Sobre", "Sobre", "Home")</li>
+                                </ul>
+                            </a>
+                        </li>
+                    </ul>
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>@Html.ActionLink("Sobre", "Sobre", "Home")</li>
+
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="container body-content">
+            @RenderBody()
+            <hr />
+            <footer>
+                <p>&copy; @DateTime.Now.Year - Controle de Usuário</p>
+            </footer>
+        </div>
+
+        @Scripts.Render("~/bundles/jquery")
+        @Scripts.Render("~/bundles/bootstrap")
+        @RenderSection("scripts", required: false)
+</body>
+</html>
