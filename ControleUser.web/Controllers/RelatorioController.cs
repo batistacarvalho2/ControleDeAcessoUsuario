@@ -6,16 +6,18 @@ using System.Web.Mvc;
 
 namespace ControleUser.web.Controllers
 {
-    public class HomeController : Controller
+    public class RelatorioController : Controller
     {
-        public ActionResult Sobre()
+        // GET: Relatorio
+        [Authorize]
+        public ActionResult PosicaoEstoque()
         {
             return View();
         }
-        public ActionResult Index()
+        [Authorize]
+        public ActionResult Ressuprimento()
         {
             return View();
         }
-
     }
 }

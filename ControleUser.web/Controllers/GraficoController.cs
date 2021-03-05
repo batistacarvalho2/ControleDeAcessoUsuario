@@ -6,16 +6,18 @@ using System.Web.Mvc;
 
 namespace ControleUser.web.Controllers
 {
-    public class HomeController : Controller
+    public class GraficoController : Controller
     {
-        public ActionResult Sobre()
+        // GET: Grafico
+        [Authorize]
+        public ActionResult PerdaMes()
         {
             return View();
         }
-        public ActionResult Index()
+        [Authorize]
+        public ActionResult EntradaSaidaMesa()
         {
             return View();
         }
-
     }
 }

@@ -9,21 +9,25 @@ namespace ControleUser.web.Controllers
     public class OperacaoController : Controller
     {
         // GET: Operacao
+        [Authorize]
         public ActionResult EntradaEstoque()
         {
             return View();
-        }      
+        }
+        [Authorize]
         public ActionResult SaidaEstoque()
         {
             return View();
-        }      
+        }
+        [Authorize]
         public ActionResult LanPerdaProduto()
         {
             return View();
-        }       
-        public ActionResult SaidaEstoque()
+        }
+        [Authorize]
+        public ActionResult Inventario()
         {
             return View();
-        }       
+        }
     }
 }
