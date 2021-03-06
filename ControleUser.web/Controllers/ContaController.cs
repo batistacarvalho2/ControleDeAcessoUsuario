@@ -4,18 +4,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.Security;
 
 namespace ControleUser.web.Controllers
 {
     public class ContaController : Controller
     {
-        [AllowAnonymous] // publico
+        [AllowAnonymous] 
         public ActionResult Login(string returnUrl)
         {
             ViewBag.ReturnUrl = returnUrl;
             return View();
         }
-
+      
         [HttpPost]
         [AllowAnonymous]
         public ActionResult Login(LoginViewModel login, string returnUrl)
@@ -24,8 +25,36 @@ namespace ControleUser.web.Controllers
             {
                 return View(login);
             }
-            
-            return View();
+
+            var achou = (login.Usuario == "joao" && login.Senha == "123");
+            if(achou)
+            {
+                FormsAuthentication.SetAuthCookie(login.Usuario, login.LembrarMe);
+                if(Url.IsLocalUrl(returnUrl))
+                {
+                    return Redirect(returnUrl);
+                }
+                else
+                {
+                    RedirectToAction("Index", "Home");
+                }
+            }
+            else
+            {
+                ModelState.AddModelError("", "Login invalido.");
+            }
+
+          
+            return View(login);
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        public ActionResult LogOff()
+        {
+          
+            FormsAuthentication.SignOut();
+            return RedirectToAction("Index", "Home");
         }
     }
 }
