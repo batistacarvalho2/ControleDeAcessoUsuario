@@ -26,8 +26,9 @@ namespace ControleUser.web.Controllers
                 return View(login);
             }
 
-            var achou = (login.Usuario == "joao" && login.Senha == "123");
-            if(achou)
+            //var achou = (login.Usuario == "joao" && login.Senha == "123");
+            var achou = (UsuarioModel.ValidarUsuario( login.Usuario, login.Senha);
+            if (achou)
             {
                 FormsAuthentication.SetAuthCookie(login.Usuario, login.LembrarMe);
                 if(Url.IsLocalUrl(returnUrl))
