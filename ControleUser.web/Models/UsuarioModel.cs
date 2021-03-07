@@ -23,11 +23,7 @@ namespace ControleUser.web.Models
                 try
                 {
                     ret = ((long)comando.ExecuteScalar() > 0);
-                    /*NpgsqlDataReader rd = comando.ExecuteReader();
-                    while (rd.Read())
-                    {
-                        ret = ((int)comando.ExecuteScalar() > 0);
-                    }*/
+                 
                 }
                 catch (NpgsqlException e)
                 {
