@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Npgsql;
+using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
@@ -11,18 +12,29 @@ namespace ControleUser.web.Models
         public static bool ValidarUsuario(string login, string senha)
         {
             var ret = false;
-            using (var conexao = new SqlConnection())
+            //using (var conexao = new SqlConnection())
+            using (var conexao = new NpgsqlConnection())
             {
-                //conexao.ConnectionString = @" User ID=postgres;Password=123;Host=localhost;Port=5432;Database=mybase;Pooling=true;Min Pool Size=0;Max Pool Size=100;Connection Lifetime=0;";
-                conexao.ConnectionString = "Server=localhost;Port=5432;User Id=postgres;Password=123;Database=mybase;";
+                conexao.ConnectionString = "server = localhost; user id = postgres; password = 123; database = postgres";
                 conexao.Open();
-                using (var comando = new SqlCommand())
+              
+                NpgsqlCommand comando = new NpgsqlCommand(string.Format("select count(*) from usuario where login='{0}' and senha='{1}'", login,senha), conexao);
+
+                try
                 {
-                    comando.Connection = conexao;
-                    comando.CommandText = string.Format(
-                        "select count(*) from usuario where login='{0}' and senha='{1}'", login, senha);
-                   ret = ((int)comando.ExecuteScalar() > 0);
+                    ret = ((long)comando.ExecuteScalar() > 0);
+                    /*NpgsqlDataReader rd = comando.ExecuteReader();
+                    while (rd.Read())
+                    {
+                        ret = ((int)comando.ExecuteScalar() > 0);
+                    }*/
                 }
+                catch (NpgsqlException e)
+                {
+                    Console.WriteLine("Erro " + e);
+                }
+                conexao.Close();
+
             }
             return ret;
         }
