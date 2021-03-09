@@ -1,6 +1,6 @@
 ﻿using ControleUser.web.Models;
 using System;
-using System.Collections.Generic;
+using System.Collections.Generic;https://www.sefaz.pe.gov.br/Legislacao/Tributaria/Documents/Legislacao/Tabelas/CFOP.htm
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
