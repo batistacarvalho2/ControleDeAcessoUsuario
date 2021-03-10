@@ -12,7 +12,7 @@ namespace ControleUser.web.Models
         public static bool ValidarUsuario(string login, string senha)
         {
             var ret = false;
-            //using (var conexao = new SqlConnection())
+           
             using (var conexao = new NpgsqlConnection())
             {
                 conexao.ConnectionString = "server = localhost; user id = postgres; password = 123; database = postgres";

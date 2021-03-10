@@ -1,6 +1,6 @@
 ﻿using ControleUser.web.Models;
 using System;
-using System.Collections.Generic;https://www.sefaz.pe.gov.br/Legislacao/Tributaria/Documents/Legislacao/Tabelas/CFOP.htm
+using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -53,7 +53,6 @@ namespace ControleUser.web.Controllers
         [AllowAnonymous]
         public ActionResult LogOff()
         {
-          
             FormsAuthentication.SignOut();
             return RedirectToAction("Index", "Home");
         }

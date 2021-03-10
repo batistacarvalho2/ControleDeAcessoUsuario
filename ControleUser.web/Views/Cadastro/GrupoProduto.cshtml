@@ -1,5 +1,5 @@
 ﻿
-@model List < ControleUser.web.Models.GrupoProdutoModel>
+@model List<ControleUser.web.Models.GrupoProdutoModel>
 @{
     ViewBag.Title = "Cadastro de Grupo de Produtos";
 }
@@ -67,18 +67,19 @@
         </div>
     </section>
 </div>
+@Html.Hidden("id_cadastro")
 <div id="modal_cadastro" class="form-horizontal invisivel" role="dialog">
     <fieldset>
         <div class="row">
             <div class="form-group">
                 @Html.Label("txt_nome", "Nome", new { @class = "col-md-3 control-label" })
-                <div class="col-md-12">
+                <div class="col-md-6">
                     @Html.TextBox("txt_nome", null, new { @class = "form-control" })
                 </div>
             </div>
             <div class="form-group">
                 @Html.Label("cbx_ativo", "Ativo", new { @class = "col-md-3 control-label" })
-                <div class="col-md-12">
+                <div class="col-md-9">
                     @Html.CheckBox("cbx_ativo")
                 </div>
             </div>
@@ -95,9 +96,11 @@
         </div>
     </fieldset>
 </div>
+
 @section Scripts{
     <script>
         function abrir_form(dados) {
+            $('#id_cadastro').val(dados.Id);
             $('#txt_nome').val(dados.Nome);
             $('#cbx_ativo').prop('checked', dados.Ativo);
             var modal_cadastro = $('#modal_cadastro');
@@ -114,6 +117,18 @@
                 modal_cadastro.hide().appendTo('body');
             });
         }
+        function criar_linha_grid(dados) {
+            var ret =
+                '<tr data-id=' + dados.Id + '>' +
+                '<td>' + dados.Nome + '</td>' +
+                '<td>' + (dados.Ativo ? 'SIM' : 'NÃO') + '</td>' +
+                '<td>' +
+                '<a class="btn btn-primary btn-alterar" role="button" style="margin-right: 3px"><i class="glyphicon glyphicon-pencil"></i> Alterar</a>' +
+                '<a class="btn btn-danger btn-excluir" role="button"><i class="glyphicon glyphicon-trash"></i> Excluir</a>' +
+                '</td>' +
+                '</tr>';
+            return ret;
+        }
         $(document).on('click', '#btn_incluir', function () {
             abrir_form({ Id: 0, Nome: '', Ativo: true });
         })
@@ -129,7 +144,58 @@
             });
         })
         .on('click', '.btn-excluir', function () {
-            alert('3');
+            var btn = $(this),
+                tr = btn.closest('tr'),
+                id = tr.attr('data-id'),
+                url = '@Url.Action("ExcluirGrupoProduto", "Cadastro")',
+                param = { 'id': id };
+            bootbox.confirm({
+                message: "Realmente deseja excluir o grupo de produto?",
+                buttons: {
+                    confirm: {
+                        label: 'Sim',
+                        className: 'btn-success'
+                    },
+                    cancel: {
+                        label: 'Não',
+                        className: 'btn-danger'
+                    }
+                },
+                callback: function (result) {
+                    if (result) {
+                        $.post(url, param, function (response) {
+                            if (response) {
+                                tr.remove();
+                            }
+                        });
+                    }
+                }
+            });
         })
+        .on('click', '#btn_confirmar', function () {
+            var btn = $(this),
+                url = '@Url.Action("SalvarGrupoProduto", "Cadastro")',
+                param = {
+                    Id: $('#id_cadastro').val(),
+                    Nome: $('#txt_nome').val(),
+                    Ativo: $('#cbx_ativo').prop('checked')
+                };
+            $.post(url, param, function (response) {
+                if (response) {
+                    if (param.Id == 0) {
+                        var table = $('#grid_cadastro').find('tbody'),
+                            linha = criar_linha_grid(response);
+                        table.append(linha);
+                    }
+                    else {
+                        var linha = $('#grid_cadastro').find('tr[data-id=' + param.Id + ']').find('td');
+                        linha
+                            .eq(0).html(param.Nome).end()
+                            .eq(1).html(param.Ativo ? 'SIM' : 'NÃO');
+                    }
+                    $('#modal_cadastro').parents('.bootbox').modal('hide');
+                }
+            });
+        });
     </script>
 }
