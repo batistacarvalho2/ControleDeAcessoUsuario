@@ -57,12 +57,12 @@ namespace ControleUser.web.Models
                 using (var comando = new NpgsqlCommand())
                 {
                     comando.Connection = conexao;
-                    comando.CommandText = string.Format("select * from grupo_produto where {id ={0}",id);
+                    comando.CommandText = string.Format("select * from grupo_produto where (id ={0})",id);
                     var reader = comando.ExecuteReader();
 
                     if (reader.Read())
                     {
-                        ret = new Models.GrupoProdutoModel
+                        ret = new GrupoProdutoModel
                         {
                             Id = (int)reader["id"],
                             Nome = (string)reader["nome"],
@@ -88,7 +88,7 @@ namespace ControleUser.web.Models
                     using (var comando = new NpgsqlCommand())
                     {
                         comando.Connection = conexao;
-                        comando.CommandText = string.Format("delete * from grupo_produto where {id ={0}", id);
+                        comando.CommandText = string.Format("delete from grupo_produto where (id = {0})", id);
                         ret = (comando.ExecuteNonQuery() > 0);
                     }
                 }
@@ -112,12 +112,12 @@ namespace ControleUser.web.Models
 
                     if (model == null)
                     {
-                        comando.CommandText = string.Format("INSERT INTO grupo_produto(nome, ativo) VALUES ('{0}',{1}); select convert(int, scope_identity())",this.Nome, this.Ativo ? 1: 0);
-                        ret = (int)comando.ExecuteScalar();
+                        comando.CommandText = string.Format("insert into grupo_produto (nome, ativo) values ('{0}', {1}); ", this.Nome, this.Ativo ? 1 : 0);
+                        ret = Convert.ToInt32(comando.ExecuteScalar());
                     }
                     else
                     {
-                        comando.CommandText = string.Format("update grupo_produto set nome='{1}', ativo={2} where id = {0}",this.Id, this.Nome, this.Ativo ? 1 : 0);
+                        comando.CommandText = string.Format("update grupo_produto set nome='{1}', ativo={2} where id = {0}", this.Id, this.Nome, this.Ativo ? 1 : 0);
                         if (comando.ExecuteNonQuery() > 0)
                         {
                             ret = this.Id;
