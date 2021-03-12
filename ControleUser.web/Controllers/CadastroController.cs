@@ -20,51 +20,58 @@ namespace ControleUser.web.Controllers
         [Authorize]
         public ActionResult GrupoProduto()
         {
-            return View(_listaGrupoProduto);
+            return View(GrupoProdutoModel.RecuperarLista());
         }
 
         [HttpPost]
         [Authorize]
         public ActionResult RecuperarGrupoProduto(int id)
         {
-            return Json(_listaGrupoProduto.Find(x => x.Id == id));
+            return Json(GrupoProdutoModel.RecuperarPeloId(id));
         }
 
         [HttpPost]
         [Authorize]
         public ActionResult ExcluirGrupoProduto(int id)
         {
-            var ret = false;
-
-            var registroBD = _listaGrupoProduto.Find(x => x.Id == id);
-            if (registroBD != null)
-            {
-                _listaGrupoProduto.Remove(registroBD);
-                ret = true;
-            }
-
-            return Json(ret);
+            return Json(GrupoProdutoModel.ExcluirPeloId(id));
         }
 
         [HttpPost]
         [Authorize]
         public ActionResult SalvarGrupoProduto(GrupoProdutoModel model)
         {
-            var registroBD = _listaGrupoProduto.Find(x => x.Id == model.Id);
+            var resultado = "OK";
+            var mensagens = new List<string>();
+            var idSalvo = string.Empty;
 
-            if (registroBD == null)
+            if (!ModelState.IsValid)
             {
-                registroBD = model;
-                registroBD.Id = _listaGrupoProduto.Max(x => x.Id) + 1;
-                _listaGrupoProduto.Add(registroBD);
+                resultado = "AVISO";
+                mensagens = ModelState.Values.SelectMany(x => x.Errors).Select(x =>x.ErrorMessage).ToList();
             }
             else
             {
-                registroBD.Nome = model.Nome;
-                registroBD.Ativo = model.Ativo;
-            }
+                try
+                {
+                    var id = model.Salvar();
+                    if(id > 0)
+                    {
+                        idSalvo = id.ToString();
+                    }
+                    else
+                    {
+                        resultado = "ERRO";
+                    }
 
-            return Json(registroBD);
+                }
+                catch (Exception ex)
+                {
+                    resultado = "ERRO";
+                }
+            }
+            //objeto anonimo
+            return Json(new { Resultado = resultado, Mensagens = mensagens, IdSalvo = idSalvo});
         }
 
 

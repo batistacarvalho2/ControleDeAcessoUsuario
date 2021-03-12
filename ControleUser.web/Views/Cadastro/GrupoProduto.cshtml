@@ -69,6 +69,7 @@
 </div>
 @Html.Hidden("id_cadastro")
 <div id="modal_cadastro" class="form-horizontal invisivel" role="dialog">
+    <div id="msg_mensagem_aviso" class="text-danger invisivel"></div>
     <fieldset>
         <div class="row">
             <div class="form-group">
@@ -92,6 +93,8 @@
                         <a id="btn_confirmar" class="btn btn-primary" role="button"><i class="glyphicon glyphicon-ok"></i> Salvar</a>
                     </div>
                 </div>
+                <div id="msg_aviso" class="alert alert-warning invisivel">Falta preencher os campos acima.</div>
+                <div id="msg_erro" class="alert alert-danger invisible">Ops! Deus ruim!</div>
             </div>
         </div>
     </fieldset>
@@ -104,6 +107,10 @@
             $('#txt_nome').val(dados.Nome);
             $('#cbx_ativo').prop('checked', dados.Ativo);
             var modal_cadastro = $('#modal_cadastro');
+            $('#msg_mensagem_aviso').empty();
+            $('#msg_aviso').hide();
+            $('#msg_mensagem_aviso').hide();
+            $('#msg_erro').hide();
             bootbox.dialog({
                 title: '@ViewBag.Title',
                 message: modal_cadastro
@@ -181,10 +188,11 @@
                     Ativo: $('#cbx_ativo').prop('checked')
                 };
             $.post(url, param, function (response) {
-                if (response) {
+                if (response.Resultado == "OK") {
                     if (param.Id == 0) {
+                        param.Id = response.IdSalvo;
                         var table = $('#grid_cadastro').find('tbody'),
-                            linha = criar_linha_grid(response);
+                            linha = criar_linha_grid(param);
                         table.append(linha);
                     }
                     else {
@@ -195,7 +203,25 @@
                     }
                     $('#modal_cadastro').parents('.bootbox').modal('hide');
                 }
+                else if (response.Resultado == "ERRO") {
+                    $('#msg_aviso').hide();
+                    $('#msg_mensagem_aviso').hide();
+                    $('#msg_erro').show();
+                }
+                else if (response.Resultado == "AVISO") {
+                    $('#msg_mensagem_aviso').html(formatar_mensagem_aviso(response.Mensagens));
+                    $('#msg_aviso').show();
+                    $('#msg_mensagem_aviso').show();
+                    $('#msg_erro').hide();
+                }
             });
         });
+        function formatar_mensagem_aviso(mensagens) {
+            var ret = '';
+            for (var i = 0; i < mensagens.length; i++) {
+                ret += '<li>' + mensagens[i] + '</li>';
+            }
+            return '<ul>' + ret + '</ul>';
+        }
     </script>
 }
