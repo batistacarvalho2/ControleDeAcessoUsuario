@@ -54,10 +54,9 @@ namespace ControleUser.web.Controllers
             {
                 try
                 {
-                    var id = model.Salvar();
-                    if(id > 0)
+                    if(model.Salvar() != 0)
                     {
-                        idSalvo = id.ToString();
+                        // OK
                     }
                     else
                     {
@@ -65,13 +64,13 @@ namespace ControleUser.web.Controllers
                     }
 
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
-                    resultado = "ERRO";
+                    throw;
                 }
             }
             //objeto anonimo
-            return Json(new { Resultado = resultado, Mensagens = mensagens, IdSalvo = idSalvo});
+            return Json(new { Resultado = resultado, Mensagens = mensagens});
         }
 
 
