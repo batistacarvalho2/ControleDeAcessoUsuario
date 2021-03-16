@@ -1,6 +1,7 @@
 ﻿using Npgsql;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Configuration;
 
 namespace ControleUser.web.Models
 {
@@ -19,7 +20,7 @@ namespace ControleUser.web.Models
 
             using (var conexao = new NpgsqlConnection())
             {
-                conexao.ConnectionString = "server = localhost; user id = postgres; password = 123; database = postgres";
+                conexao.ConnectionString = ConfigurationManager.ConnectionStrings["principal"].ConnectionString;
                 conexao.Open();
 
                 using (var comando = new NpgsqlCommand())
@@ -48,7 +49,7 @@ namespace ControleUser.web.Models
 
             using (var conexao = new NpgsqlConnection())
             {
-                conexao.ConnectionString = "server = localhost; user id = postgres; password = 123; database = postgres";
+                conexao.ConnectionString = ConfigurationManager.ConnectionStrings["principal"].ConnectionString;
                 conexao.Open();
 
                 using (var comando = new NpgsqlCommand())
@@ -79,7 +80,7 @@ namespace ControleUser.web.Models
             {
                 using (var conexao = new NpgsqlConnection())
                 {
-                    conexao.ConnectionString = "server = localhost; user id = postgres; password = 123; database = postgres";
+                    conexao.ConnectionString = ConfigurationManager.ConnectionStrings["principal"].ConnectionString;
                     conexao.Open();
 
                     using (var comando = new NpgsqlCommand())
@@ -99,7 +100,7 @@ namespace ControleUser.web.Models
 
             using (var conexao = new NpgsqlConnection())
             {
-                conexao.ConnectionString = "server = localhost; user id = postgres; password = 123; database = postgres";
+                conexao.ConnectionString = ConfigurationManager.ConnectionStrings["principal"].ConnectionString;
                 conexao.Open();
 
                 if (IncluirRegistro(model, conexao) == false)

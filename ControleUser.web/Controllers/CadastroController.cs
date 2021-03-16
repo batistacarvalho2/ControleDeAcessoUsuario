@@ -64,7 +64,7 @@ namespace ControleUser.web.Controllers
                     }
 
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     resultado = "ERRO";
                 }
