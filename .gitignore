@@ -1,7 +1,6 @@
-.vs
-/.vs/*.*
 bin
 obj
 *.dll
 *.pbo
 packages
+/.vs
