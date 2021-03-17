@@ -37,7 +37,7 @@ namespace ControleUser.web.Controllers
                 }
                 else
                 {
-                    RedirectToAction("Index", "Home");
+                   return RedirectToAction("Index", "Home");
                 }
             }
             else

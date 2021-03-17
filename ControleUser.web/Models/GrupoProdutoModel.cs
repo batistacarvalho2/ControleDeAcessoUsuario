@@ -1,4 +1,5 @@
 ﻿using Npgsql;
+using NpgsqlTypes;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Configuration;
@@ -55,7 +56,9 @@ namespace ControleUser.web.Models
                 using (var comando = new NpgsqlCommand())
                 {
                     comando.Connection = conexao;
-                    comando.CommandText = string.Format("select * from grupo_produto where (id ={0})", id);
+                    comando.CommandText = "select * from grupo_produto where (id =@id)";
+
+                    comando.Parameters.Add("@id", NpgsqlDbType.Integer).Value = id;
                     var reader = comando.ExecuteReader();
 
                     if (reader.Read())
@@ -86,7 +89,10 @@ namespace ControleUser.web.Models
                     using (var comando = new NpgsqlCommand())
                     {
                         comando.Connection = conexao;
-                        comando.CommandText = string.Format("delete from grupo_produto where (id = {0})", id);
+                        comando.CommandText = "delete from grupo_produto where (id = @id)";
+
+                        comando.Parameters.Add("@id", NpgsqlDbType.Integer).Value = id;
+
                         ret = (comando.ExecuteNonQuery() > 0);
                     }
                 }
