@@ -27,10 +27,10 @@ namespace ControleUser.web.Controllers
             }
 
             //var achou = (login.Usuario == "joao" && login.Senha == "123");
-            var achou = (UsuarioModel.ValidarUsuario( login.Usuario, login.Senha));
-            if (achou)
+            var usuario = (UsuarioModel.ValidarUsuario( login.Usuario, login.Senha));
+            if (usuario != null)
             {
-                FormsAuthentication.SetAuthCookie(login.Usuario, login.LembrarMe);
+                FormsAuthentication.SetAuthCookie(usuario.Nome, login.LembrarMe);
                 if(Url.IsLocalUrl(returnUrl))
                 {
                     return Redirect(returnUrl);

@@ -13,9 +13,18 @@ namespace ControleUser.web.Models
 {
     public class UsuarioModel
     {
-        public static bool ValidarUsuario(string login, string senha)
+        public int Id { get; set; }
+
+       // [Required(ErrorMessage = "Informe o login")]
+        public string Login { get; set; }
+       // [Required(ErrorMessage = "Informe o senha")]
+        public string Senha { get; set; }
+      //  [Required(ErrorMessage = "Informe o nome")]
+        public string Nome { get; set; }
+
+        public static UsuarioModel ValidarUsuario(string login, string senha)
         {
-            var ret = false;
+            UsuarioModel ret = null;
            
             using (var conexao = new NpgsqlConnection())
             {
@@ -29,8 +38,19 @@ namespace ControleUser.web.Models
 
                 try
                 {
-                    ret = ((long)comando.ExecuteScalar() > 0);
-                 
+                    //ret = ((long)comando.ExecuteScalar() > 0);
+
+                    var reader = comando.ExecuteReader();
+                    if (reader.Read())
+                    {
+                        ret = new UsuarioModel
+                        {
+                            Id = (int)reader["id"],
+                            Login = (string)reader["login"],
+                            Senha = (string)reader["senha"],
+                            Nome = (string)reader["nome"]
+                        };
+                    }
                 }
                 catch (NpgsqlException e)
                 {
