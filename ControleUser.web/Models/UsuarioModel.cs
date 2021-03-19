@@ -31,17 +31,17 @@ namespace ControleUser.web.Models
                 conexao.ConnectionString = ConfigurationManager.ConnectionStrings["principal"].ConnectionString;
                 conexao.Open();
 
-                NpgsqlCommand comando = new NpgsqlCommand(string.Format("select count(*) from usuario where login=@login and senha=@senha", login, CriptoHelper.HashMD5(senha)), conexao);
+                NpgsqlCommand comando = new NpgsqlCommand(string.Format("select * from usuario where login=@login and senha=@senha", login, CriptoHelper.HashMD5(senha)), conexao);
 
                 comando.Parameters.Add("@login",NpgsqlDbType.Varchar).Value = login;
                 comando.Parameters.Add("@senha",NpgsqlDbType.Varchar).Value = CriptoHelper.HashMD5(senha);
-
+                
                 try
                 {
                     //ret = ((long)comando.ExecuteScalar() > 0);
-
                     var reader = comando.ExecuteReader();
-                    if (reader.Read())
+
+                    while (reader.Read())
                     {
                         ret = new UsuarioModel
                         {

@@ -28,6 +28,7 @@ namespace ControleUser.web.Controllers
 
             //var achou = (login.Usuario == "joao" && login.Senha == "123");
             var usuario = (UsuarioModel.ValidarUsuario( login.Usuario, login.Senha));
+
             if (usuario != null)
             {
                 FormsAuthentication.SetAuthCookie(usuario.Nome, login.LembrarMe);
