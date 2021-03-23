@@ -178,8 +178,8 @@ namespace ControleUser.web.Models
                 if (model == null)
                 {
                     comando.Parameters.AddWithValue("Nome", NpgsqlTypes.NpgsqlDbType.Varchar, this.Nome);
-                    comando.Parameters.AddWithValue("Login", NpgsqlTypes.NpgsqlDbType.Boolean, this.Login);
-                    comando.Parameters.AddWithValue("Senha", NpgsqlTypes.NpgsqlDbType.Boolean, CriptoHelper.HashMD5(this.Senha));
+                    comando.Parameters.AddWithValue("Login", NpgsqlTypes.NpgsqlDbType.Varchar, this.Login);
+                    comando.Parameters.AddWithValue("Senha", NpgsqlTypes.NpgsqlDbType.Varchar, CriptoHelper.HashMD5(this.Senha));
                     comando.Prepare();
 
                     comando.ExecuteNonQuery();
@@ -192,21 +192,22 @@ namespace ControleUser.web.Models
 
         private bool Update(UsuarioModel model, NpgsqlConnection conexao)
         {
-            var queryResult = $@"update usuario set nome = @Nome, login = @Login" +
-                (!string.IsNullOrEmpty(this.Senha) ?" ,senha=@Senha": "") + " where id = @Id";
+             var queryResult = $@"update usuario set nome=@Nome, login=@Login" +
+                (!string.IsNullOrEmpty(model.Senha) ? " ,senha=@Senha" : "") + " where id=@Id";
+
 
             using (var comando = new NpgsqlCommand(queryResult, conexao))
             {
-                comando.Parameters.AddWithValue("@nome", NpgsqlTypes.NpgsqlDbType.Varchar, this.Nome);
-                comando.Parameters.AddWithValue("@login", NpgsqlTypes.NpgsqlDbType.Boolean, this.Login);
+                comando.Parameters.AddWithValue("@nome", NpgsqlTypes.NpgsqlDbType.Varchar, model.Nome);
+                comando.Parameters.AddWithValue("@login", NpgsqlTypes.NpgsqlDbType.Varchar, model.Login);
 
-                if (!string.IsNullOrEmpty(this.Senha))
+                if (!string.IsNullOrEmpty(model.Senha))
                 {
-                    comando.Parameters.AddWithValue("@senha", NpgsqlTypes.NpgsqlDbType.Boolean, CriptoHelper.HashMD5(this.Senha));
+                    comando.Parameters.AddWithValue("@senha", NpgsqlTypes.NpgsqlDbType.Varchar, CriptoHelper.HashMD5(model.Senha));
                 }
-                comando.Parameters.AddWithValue("@id", NpgsqlTypes.NpgsqlDbType.Integer, this.Id);
+                comando.Parameters.AddWithValue("@id", NpgsqlTypes.NpgsqlDbType.Integer, model.Id);
                 comando.Prepare();
-                
+
                 if (comando.ExecuteNonQuery() > 0)
                 {
                     return true;
