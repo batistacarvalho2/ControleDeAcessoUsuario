@@ -149,74 +149,119 @@ namespace ControleUser.web.Models
             return ret;
         }
 
-        public int Salvar() //Apenas inclui os dados no banco!
+        public bool Salvar(UsuarioModel model) //Apenas inclui os dados no banco!
         {
-            var model = RecuperarPeloId(this.Id);
+            if (model.Id == 0)
+                return SalvarUsuario();
+            else
+                return AtualizaUsuario(model);
+        }
+
+        private bool SalvarUsuario()
+        {
+            using (var conexao = new NpgsqlConnection())
+            {
+                conexao.ConnectionString = ConfigurationManager.ConnectionStrings["principal"].ConnectionString;
+                
+
+                var queryResult = $@"insert into usuario (nome, login, senha) values (@Nome, @login, @senha)";
+                
+                using (var comando = new NpgsqlCommand(queryResult, conexao))
+                {
+                    conexao.Open();
+
+                    comando.Parameters.AddWithValue("Nome", NpgsqlTypes.NpgsqlDbType.Varchar, this.Nome);
+                    comando.Parameters.AddWithValue("Login", NpgsqlTypes.NpgsqlDbType.Varchar, this.Login);
+                    comando.Parameters.AddWithValue("Senha", NpgsqlTypes.NpgsqlDbType.Varchar, CriptoHelper.HashMD5(this.Senha));
+                    
+                    comando.Prepare();
+
+                    var res = comando.ExecuteNonQuery();
+                    
+                    conexao.Close();
+
+                    if (res > 0)
+                        return true;
+                    else
+                        return false;
+                }
+            }
+        }
+
+        private bool AtualizaUsuario(UsuarioModel model)
+        {
 
             using (var conexao = new NpgsqlConnection())
             {
                 conexao.ConnectionString = ConfigurationManager.ConnectionStrings["principal"].ConnectionString;
+               
+                if (string.IsNullOrEmpty(model.Senha))
+                    return AtualizaSemSenha(model, conexao);
+                else
+                    return AtualizaComSenha(model, conexao);
+            }
+        }
+
+        private bool AtualizaComSenha(UsuarioModel model, NpgsqlConnection conexao)
+        {
+            string queryResult = $@"update 
+                                            USUARIO 
+                                    set 
+                                            nome = @Nome, 
+                                            login = @Login, 
+                                            senha = @Senha 
+                                    where 
+                                            id = @Id";
+
+            using (var comando = new NpgsqlCommand(queryResult, conexao))
+            {
                 conexao.Open();
 
-                if (IncluirRegistro(model, conexao) == false)
-                {
-                    return Update(model, conexao) ? 1 : 0;
-                }
-                else
-                {
-                    return 1;
-                }
-
-            }
-        }
-
-        private bool IncluirRegistro(UsuarioModel model, NpgsqlConnection conexao)
-        {
-            var queryResult = $@"insert into usuario (nome, login, senha) values (@Nome, @login, @senha)";
-            using (var comando = new NpgsqlCommand(queryResult, conexao))
-            {
-                if (model == null)
-                {
-                    comando.Parameters.AddWithValue("Nome", NpgsqlTypes.NpgsqlDbType.Varchar, this.Nome);
-                    comando.Parameters.AddWithValue("Login", NpgsqlTypes.NpgsqlDbType.Varchar, this.Login);
-                    comando.Parameters.AddWithValue("Senha", NpgsqlTypes.NpgsqlDbType.Varchar, CriptoHelper.HashMD5(this.Senha));
-                    comando.Prepare();
-
-                    comando.ExecuteNonQuery();
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
-        private bool Update(UsuarioModel model, NpgsqlConnection conexao)
-        {
-             var queryResult = $@"update usuario set nome=@Nome, login=@Login" +
-                (!string.IsNullOrEmpty(model.Senha) ? " ,senha=@Senha" : "") + " where id=@Id";
-
-
-            using (var comando = new NpgsqlCommand(queryResult, conexao))
-            {
-                comando.Parameters.AddWithValue("@nome", NpgsqlTypes.NpgsqlDbType.Varchar, model.Nome);
-                comando.Parameters.AddWithValue("@login", NpgsqlTypes.NpgsqlDbType.Varchar, model.Login);
-
-                if (!string.IsNullOrEmpty(model.Senha))
-                {
-                    comando.Parameters.AddWithValue("@senha", NpgsqlTypes.NpgsqlDbType.Varchar, CriptoHelper.HashMD5(model.Senha));
-                }
-                comando.Parameters.AddWithValue("@id", NpgsqlTypes.NpgsqlDbType.Integer, model.Id);
+                comando.Parameters.AddWithValue("Nome", NpgsqlTypes.NpgsqlDbType.Varchar, model.Nome);
+                comando.Parameters.AddWithValue("Login", NpgsqlTypes.NpgsqlDbType.Varchar, model.Login);
+                comando.Parameters.AddWithValue("Senha", NpgsqlTypes.NpgsqlDbType.Varchar, model.Senha);
+                comando.Parameters.AddWithValue("Id", NpgsqlTypes.NpgsqlDbType.Integer, model.Id);
+                
                 comando.Prepare();
 
-                if (comando.ExecuteNonQuery() > 0)
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
+                var res = comando.ExecuteNonQuery();
 
+                conexao.Close();
+
+                if (res > 0)
+                    return true;
+                else
+                    return false;
+            }
+        }
+
+        private bool AtualizaSemSenha(UsuarioModel model, NpgsqlConnection conexao)
+        {
+            string queryResult = $@"update 
+                                            usuario 
+                                    set 
+                                            nome=@Nome, 
+                                            login=@Login
+                                    where 
+                                            id=@Id";
+            
+            using (var comando = new NpgsqlCommand(queryResult, conexao))
+            {
+                conexao.Open();
+
+                comando.Parameters.AddWithValue("@Nome", NpgsqlTypes.NpgsqlDbType.Varchar, model.Nome);
+                comando.Parameters.AddWithValue("@Login", NpgsqlTypes.NpgsqlDbType.Varchar, model.Login);
+                comando.Parameters.AddWithValue("@Id", NpgsqlTypes.NpgsqlDbType.Integer, model.Id);
+                comando.Prepare();
+
+                var res = comando.ExecuteNonQuery();
+
+                conexao.Close();
+                
+                if(res > 0)
+                    return true;
+                else
+                    return false;
             }
         }
     }

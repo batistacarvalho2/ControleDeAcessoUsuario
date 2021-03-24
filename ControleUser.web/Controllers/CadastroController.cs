@@ -48,7 +48,7 @@ namespace ControleUser.web.Controllers
             {
                 try
                 {
-                    if (model.Salvar() != 0)
+                    if (model.Salvar(model))
                     {
                         // ok
                     }
