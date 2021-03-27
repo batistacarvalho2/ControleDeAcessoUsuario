@@ -11,9 +11,12 @@ namespace ControleUser.web.Controllers
     {
         #region Cadastro Usuário
 
+        private const string _senhaPadrao = "{$127,$188}";
+
         [Authorize]
         public ActionResult Usuario()
-        {
+        {        
+            ViewBag.SenhaPadrao = _senhaPadrao;
             return View(UsuarioModel.RecuperarLista());
         }
 
@@ -48,6 +51,11 @@ namespace ControleUser.web.Controllers
             {
                 try
                 {
+                    if (model.Senha == _senhaPadrao)
+                    {
+                        model.Senha = "";
+
+                    }
                     if (model.Salvar(model))
                     {
                         // ok

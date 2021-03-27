@@ -3,6 +3,7 @@ using Npgsql;
 using NpgsqlTypes;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
@@ -15,11 +16,11 @@ namespace ControleUser.web.Models
     {
         public int Id { get; set; }
 
-        // [Required(ErrorMessage = "Informe o login")]
+         [Required(ErrorMessage = "Informe o login")]
         public string Login { get; set; }
-        // [Required(ErrorMessage = "Informe o senha")]
+         [Required(ErrorMessage = "Informe o senha")]
         public string Senha { get; set; }
-        //  [Required(ErrorMessage = "Informe o nome")]
+        [Required(ErrorMessage = "Informe o nome")]
         public string Nome { get; set; }
 
         public static UsuarioModel ValidarUsuario(string login, string senha)
