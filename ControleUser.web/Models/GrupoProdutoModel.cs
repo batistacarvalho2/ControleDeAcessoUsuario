@@ -1,5 +1,6 @@
 ﻿using Npgsql;
 using NpgsqlTypes;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Configuration;
@@ -15,9 +16,9 @@ namespace ControleUser.web.Models
 
         public bool Ativo { get; set; }
 
-        public static List<GrupoProdutoModel> RecuperarLista()
+        public static int RecuperarQuantidade()
         {
-            var ret = new List<GrupoProdutoModel>();
+            var ret = 0;
 
             using (var conexao = new NpgsqlConnection())
             {
@@ -27,7 +28,29 @@ namespace ControleUser.web.Models
                 using (var comando = new NpgsqlCommand())
                 {
                     comando.Connection = conexao;
-                    comando.CommandText = "select * from grupo_produto order by nome";
+                    comando.CommandText = "SELECT COUNT(*) FROM grupo_produto";
+                    ret = Convert.ToInt32(comando.ExecuteScalar());
+
+                }
+            }
+            return ret;
+        }
+
+        public static List<GrupoProdutoModel> RecuperarLista(int pagina, int tamPagina)
+        {
+            var ret = new List<GrupoProdutoModel>();
+
+            using (var conexao = new NpgsqlConnection())
+            { 
+                conexao.ConnectionString = ConfigurationManager.ConnectionStrings["principal"].ConnectionString;
+                conexao.Open();
+
+                using (var comando = new NpgsqlCommand())
+                {
+                    var pos = (pagina -1) * tamPagina;
+
+                    comando.Connection = conexao;
+                    comando.CommandText = string.Format( "SELECT * FROM grupo_produto ORDER BY nome OFFSET {0} ROWS FETCH NEXT {1} ROWS ONLY",pos>0 ? pos-1 : 0, tamPagina);
                     var reader = comando.ExecuteReader();
 
                     while (reader.Read())
