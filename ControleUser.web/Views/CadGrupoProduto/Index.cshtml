@@ -102,13 +102,13 @@
         <div class="row">
             <div class="form-group">
                 @Html.Label("txt_nome", "Nome", new { @class = "col-md-3 control-label" })
-                <div class="col-md-12">
+                <div class="col-md-6">
                     @Html.TextBox("txt_nome", null, new { @class = "form-control" })
                 </div>
             </div>
             <div class="form-group">
                 @Html.Label("cbx_ativo", "Ativo", new { @class = "col-md-3 control-label" })
-                <div class="col-md-12">
+                <div class="col-md-9">
                     @Html.CheckBox("cbx_ativo")
                 </div>
             </div>
@@ -173,7 +173,7 @@
         .on('click', '.btn-alterar', function () {
             var btn = $(this),
                 id = btn.closest('tr').attr('data-id'),
-                url = '@Url.Action("RecuperarGrupoProduto", "Cadastro")',
+                url = '@Url.Action("RecuperarGrupoProduto", "CadGrupoProduto")',
                 param = { 'id': id };
             $.post(url, add_anti_forgery_token(param), function (response) {
                 if (response) {
@@ -185,7 +185,7 @@
             var btn = $(this),
                 tr = btn.closest('tr'),
                 id = tr.attr('data-id'),
-                url = '@Url.Action("ExcluirGrupoProduto", "Cadastro")',
+                url = '@Url.Action("ExcluirGrupoProduto", "CadGrupoProduto")',
                 param = { 'id': id };
             bootbox.confirm({
                 message: "Realmente deseja excluir o grupo de produto?",
@@ -212,7 +212,7 @@
         })
         .on('click', '#btn_confirmar', function () {
             var btn = $(this),
-                url = '@Url.Action("SalvarGrupoProduto", "Cadastro")',
+                url = '@Url.Action("SalvarGrupoProduto", "CadGrupoProduto")',
                 param = {
                     Id: $('#id_cadastro').val(),
                     Nome: $('#txt_nome').val(),
@@ -250,7 +250,7 @@
         .on('click', '.page-item', function () {
             var btn = $(this),
                 pagina = btn.text(),
-                url = '@Url.Action("GrupoProdutoPagina", "Cadastro")';
+                url = '@Url.Action("GrupoProdutoPagina", "CadGrupoProduto")';
             $.post(url, add_anti_forgery_token({ pagina }), function (response) {
                 if (response) {
                     var table = $('#grid_cadastro').find('tbody');
