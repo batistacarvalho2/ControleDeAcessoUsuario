@@ -20,8 +20,9 @@ function abrir_form(dados) {
     $('#msg_aviso').hide();
     $('#msg_mensagem_aviso').hide();
     $('#msg_erro').hide();
+
     bootbox.dialog({
-        title: '@ViewBag.Title',
+        title: tituloPagina,
         message: modal_cadastro
     })
         .on('shown.bs.modal', function () {
@@ -53,7 +54,7 @@ $(document).on('click', '#btn_incluir', function () {
     .on('click', '.btn-alterar', function () {
         var btn = $(this),
             id = btn.closest('tr').attr('data-id'),
-            url = '@Url.Action("RecuperarGrupoProduto", "CadGrupoProduto")',
+            url = url_alterar,
             param = { 'id': id };
         $.post(url, add_anti_forgery_token(param), function (response) {
             if (response) {
@@ -65,7 +66,7 @@ $(document).on('click', '#btn_incluir', function () {
         var btn = $(this),
             tr = btn.closest('tr'),
             id = tr.attr('data-id'),
-            url = '@Url.Action("ExcluirGrupoProduto", "CadGrupoProduto")',
+            url = url_excluir,
             param = { 'id': id };
         bootbox.confirm({
             message: "Realmente deseja excluir o grupo de produto?",
@@ -92,7 +93,7 @@ $(document).on('click', '#btn_incluir', function () {
     })
     .on('click', '#btn_confirmar', function () {
         var btn = $(this),
-            url = '@Url.Action("SalvarGrupoProduto", "CadGrupoProduto")',
+            url = url_confirmar;
             param = {
                 Id: $('#id_cadastro').val(),
                 Nome: $('#txt_nome').val(),
@@ -130,7 +131,7 @@ $(document).on('click', '#btn_incluir', function () {
     .on('click', '.page-item', function () {
         var btn = $(this),
             pagina = btn.text(),
-            url = '@Url.Action("GrupoProdutoPagina", "CadGrupoProduto")';
+            url = url_page_click;
         $.post(url, add_anti_forgery_token({ pagina }), function (response) {
             if (response) {
                 var table = $('#grid_cadastro').find('tbody');
