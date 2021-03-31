@@ -226,6 +226,7 @@
     <Content Include="Views\Operacao\Inventario.cshtml" />
     <Content Include="Views\Operacao\LanPerdaProduto.cshtml" />
     <Content Include="Views\Conta\Login.cshtml" />
+    <Content Include="Views\Shared\_Cadastro.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

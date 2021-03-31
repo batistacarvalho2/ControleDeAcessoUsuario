@@ -1,118 +1,72 @@
 ﻿
 @model List<ControleUser.web.Models.GrupoProdutoModel>
 @{
+    Layout = "~/Views/Shared/_Cadastro.cshtml";
     ViewBag.Title = "Cadastro de Grupo de Produtos";
 }
 
-<link href="~/Content/Cadastro/GrupoProduto.css" rel="stylesheet" />
+@section Styles{
+    <link href="~/Content/Cadastro/GrupoProduto.css" rel="stylesheet" />
+}
 
-<div id="cadastro">
-    <section id="cadastro_cabecalho">
-        <h1>@ViewBag.Title</h1>
-    </section>
-    <section id="cadastro_conteudo">
-        <div id="cabecalho_grid" class="row">
-            <div class="col-md-12">
-                <a id="btn_incluir" class="btn btn-success" role="button"><i class="glyphicon glyphicon-plus"></i> Incluir</a>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-12">
-                <table id="grid_cadastro" class="table table-bordered table-striped table-hover">
-                    <thead>
-                        <tr>
-                            <th>Nome</th>
-                            <th>Ativo</th>
-                            <th>Ação</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @{
-                            var linha = 0;
-                            foreach (var item in Model)
-                            {
-                                linha++;
-                                if (linha < ViewBag.QuantMaxLinhasPorPagina)
-                                {
-                                    var ativo = (item.Ativo ? "SIM" : "NÃO");
-                                    <tr data-id="@item.Id">
-                                        <td>@item.Nome</td>
-                                        <td>@ativo</td>
-                                        <td>
-                                            <a class="btn btn-primary btn-alterar" role="button"><i class="glyphicon glyphicon-pencil"></i> Alterar</a>
-                                            <a class="btn btn-danger btn-excluir" role="button"><i class="glyphicon glyphicon-trash"></i> Excluir</a>
-                                        </td>
-                                    </tr>
-                                }
-                                else
-                                {
-                                    break;
-                                }
-                            }
-                        }
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        @if (ViewBag.QuantPaginas > 1)
+@section TituloGrid{
+    <th>Nome</th>
+    <th>Ativo</th>
+    <th>Ação</th>
+}
+
+@section LinhaGrid{
+    @{
+        var linha = 0;
+        foreach (var item in Model)
         {
-            <div class="row">
-                <div class="col-md-12">
-                    <nav aria-label="Page navigation example">
-                        <ul class="pagination">
-                            <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                            @for (int i = 2; i <= ViewBag.QuantPaginas; i++)
-                            {
-                                <li class="page-item"><a class="page-link" href="#">@i</a></li>
-                            }
-
-                        </ul>
-                    </nav>
-                </div>
-            </div>
+            linha++;
+            if (linha < ViewBag.QuantMaxLinhasPorPagina)
+            {
+                var ativo = (item.Ativo ? "SIM" : "NÃO");
+                <tr data-id="@item.Id">
+                    <td>@item.Nome</td>
+                    <td>@ativo</td>
+                    <td>
+                        <a class="btn btn-primary btn-alterar" role="button"><i class="glyphicon glyphicon-pencil"></i> Alterar</a>
+                        <a class="btn btn-danger btn-excluir" role="button"><i class="glyphicon glyphicon-trash"></i> Excluir</a>
+                    </td>
+                </tr>
+            }
+            else
+            {
+                break;
+            }
         }
-    </section>
-</div>@Html.Hidden("id_cadastro")
-<div id="modal_cadastro" class="form-horizontal invisivel" role="dialog">
-    <div id="msg_mensagem_aviso" class="text-danger invisivel"></div>
-    <fieldset>
-        @Html.AntiForgeryToken()
-        <div class="row">
-            <div class="form-group">
-                @Html.Label("txt_nome", "Nome", new { @class = "col-md-3 control-label" })
-                <div class="col-md-6">
-                    @Html.TextBox("txt_nome", null, new { @class = "form-control" })
-                </div>
-            </div>
-            <div class="form-group">
-                @Html.Label("cbx_ativo", "Ativo", new { @class = "col-md-3 control-label" })
-                <div class="col-md-9">
-                    @Html.CheckBox("cbx_ativo")
-                </div>
+    }
+}
+
+@section CamposCadastro{
+    <div class="row">
+        <div class="form-group">
+            @Html.Label("txt_nome", "Nome", new { @class = "col-md-3 control-label" })
+            <div class="col-md-6">
+                @Html.TextBox("txt_nome", null, new { @class = "form-control" })
             </div>
         </div>
-        <div class="row">
-            <div class="col-md-12">
-                <div class="form-group">
-                    <div class="modal-footer">
-                        <a id="btn_sair" class="btn btn-default" role="button" data-dismiss="modal"><i class="glyphicon glyphicon-remove"></i> Sair</a>
-                        <a id="btn_confirmar" class="btn btn-primary" role="button"><i class="glyphicon glyphicon-ok"></i> Salvar</a>
-                    </div>
-                    <div id="msg_aviso" class="alert alert-warning invisivel">Falta preencher os campos acima.</div>
-                    <div id="msg_erro" class="alert alert-danger invisible">Ops! Deus ruim!</div>
-                </div>
+        <div class="form-group">
+            @Html.Label("cbx_ativo", "Ativo", new { @class = "col-md-3 control-label" })
+            <div class="col-md-9">
+                @Html.CheckBox("cbx_ativo")
             </div>
         </div>
-    </fieldset>
-</div>
+    </div>
+}
+
 @section Scripts{
     <script>
-        var tituloPagina = '@ViewBag.Title ';
-        var url_excluir = '@Url.Action("ExcluirGrupoProduto", "CadGrupoProduto")';
-        var url_confirmar = '@Url.Action("SalvarGrupoProduto", "CadGrupoProduto")';
-        var url_alterar = '@Url.Action("RecuperarGrupoProduto", "CadGrupoProduto")';
-        var url_page_click = '@Url.Action("GrupoProdutoPagina", "CadGrupoProduto")';
-/**/
+            var tituloPagina = '@ViewBag.Title ';
+            var url_excluir = '@Url.Action("ExcluirGrupoProduto", "CadGrupoProduto")';
+            var url_confirmar = '@Url.Action("SalvarGrupoProduto", "CadGrupoProduto")';
+            var url_alterar = '@Url.Action("RecuperarGrupoProduto", "CadGrupoProduto")';
+            var url_page_click = '@Url.Action("GrupoProdutoPagina", "CadGrupoProduto")';
     </script>
     <script src="~/Scripts/Cadastro/GrupoProduto.js"></script>
 }
+
+
