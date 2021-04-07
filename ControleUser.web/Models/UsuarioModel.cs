@@ -240,7 +240,7 @@ namespace ControleUser.web.Models
 
                 comando.Parameters.AddWithValue("Nome", NpgsqlTypes.NpgsqlDbType.Varchar, model.Nome);
                 comando.Parameters.AddWithValue("Login", NpgsqlTypes.NpgsqlDbType.Varchar, model.Login);
-                comando.Parameters.AddWithValue("Senha", NpgsqlTypes.NpgsqlDbType.Varchar, model.Senha);
+                comando.Parameters.AddWithValue("Senha", NpgsqlTypes.NpgsqlDbType.Varchar, CriptoHelper.HashMD5(model.Senha));
                 comando.Parameters.AddWithValue("Id", NpgsqlTypes.NpgsqlDbType.Integer, model.Id);
                 
                 comando.Prepare();
