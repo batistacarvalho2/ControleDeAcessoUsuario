@@ -63,9 +63,27 @@ namespace ControleUser.web.Models
             return ret;
         }
 
+        public static int RecuperarQuantidade()
+        {
+            var ret = 0;
 
+            using (var conexao = new NpgsqlConnection())
+            {
+                conexao.ConnectionString = ConfigurationManager.ConnectionStrings["principal"].ConnectionString;
+                conexao.Open();
 
-        public static List<UsuarioModel> RecuperarLista()
+                using (var comando = new NpgsqlCommand())
+                {
+                    comando.Connection = conexao;
+                    comando.CommandText = "SELECT COUNT(*) FROM usuario";
+                    ret = Convert.ToInt32(comando.ExecuteScalar());
+
+                }
+            }
+            return ret;
+        }
+
+        public static List<UsuarioModel> RecuperarLista(int pagina, int tamPagina)
         {
             var ret = new List<UsuarioModel>();
 
@@ -76,8 +94,10 @@ namespace ControleUser.web.Models
 
                 using (var comando = new NpgsqlCommand())
                 {
+                    var pos = (pagina - 1) * tamPagina;
+
                     comando.Connection = conexao;
-                    comando.CommandText = "select * from usuario order by nome";
+                    comando.CommandText = string.Format("SELECT * FROM usuario ORDER BY nome OFFSET {0} ROWS FETCH NEXT {1} ROWS ONLY", pos > 0 ? pos - 1 : 0, tamPagina);
                     var reader = comando.ExecuteReader();
 
                     while (reader.Read())
@@ -220,7 +240,7 @@ namespace ControleUser.web.Models
 
                 comando.Parameters.AddWithValue("Nome", NpgsqlTypes.NpgsqlDbType.Varchar, model.Nome);
                 comando.Parameters.AddWithValue("Login", NpgsqlTypes.NpgsqlDbType.Varchar, model.Login);
-                comando.Parameters.AddWithValue("Senha", NpgsqlTypes.NpgsqlDbType.Varchar, model.Senha);
+                comando.Parameters.AddWithValue("Senha", NpgsqlTypes.NpgsqlDbType.Varchar, CriptoHelper.HashMD5(model.Senha));
                 comando.Parameters.AddWithValue("Id", NpgsqlTypes.NpgsqlDbType.Integer, model.Id);
                 
                 comando.Prepare();

@@ -7,14 +7,12 @@ using System.Web.Mvc;
 
 namespace ControleUser.web.Controllers
 {
-    public class CadastroController : Controller
+    public class CadGrupoProdutoController : Controller
     {
          private const int _quantMaxLinhasPorPagina = 5;
 
-        #region Cadastro de Produtos
-
         [Authorize]
-        public ActionResult GrupoProduto()
+        public ActionResult Index()
         {
             ViewBag.QuantMaxLinhasPorPagina = _quantMaxLinhasPorPagina;
             ViewBag.PaginaAtual = 1;
@@ -24,7 +22,6 @@ namespace ControleUser.web.Controllers
 
             var difQuantPaginas = (quant % ViewBag.QuantMaxLinhasPorPagina) > 0? 1 : 0;
             ViewBag.QuantPaginas = (quant / ViewBag.QuantMaxLinhasPorPagina) + difQuantPaginas;   
-
 
                 return View(lista);
         }
@@ -89,62 +86,7 @@ namespace ControleUser.web.Controllers
             //objeto anonimo
             return Json(new { Resultado = resultado, Mensagens = mensagens, IdSalvo = idSalvo });
         }
-
-        [Authorize]
-        public ActionResult MarcaProduto()
-        {
-            return View();
-        }
-
-        [Authorize]
-        public ActionResult LocalProduto()
-        {
-            return View();
-        }
-
-        [Authorize]
-        public ActionResult UnidadeMedida()
-        {
-            return View();
-        }
-
-        [Authorize]
-        public ActionResult Produto()
-        {
-            return View();
-        }
-
-        [Authorize]
-        public ActionResult Pais()
-        {
-            return View();
-        }
-
-        [Authorize]
-        public ActionResult Estado()
-        {
-            return View();
-        }
-
-        [Authorize]
-        public ActionResult Cidade()
-        {
-            return View();
-        }
-
-        [Authorize]
-        public ActionResult Fornecedor()
-        {
-            return View();
-        }
-
-        [Authorize]
-        public ActionResult PerfilUsuario()
-        {
-            return View();
-        }
-
-        #endregion
+      
     }
 }
 

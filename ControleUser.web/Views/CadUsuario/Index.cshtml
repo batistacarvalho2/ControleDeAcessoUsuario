@@ -1,0 +1,75 @@
+﻿@model List<ControleUser.web.Models.UsuarioModel>
+@{
+    Layout = "~/Views/Shared/_Cadastro.cshtml";
+    ViewBag.Title = "Usuários";
+}
+
+@section Styles{
+    <link href="~/Content/Cadastro/Usuario.css" rel="stylesheet" />
+}
+
+@section TituloGrid{
+    <th>Nome</th>
+    <th>Login</th>
+    <th>Ação</th>
+}
+
+@section LinhaGrid{
+    @{
+        var linha = 0;
+        foreach (var item in Model)
+        {
+            linha++;
+            if (linha < ViewBag.QuantMaxLinhasPorPagina)
+            {
+                <tr data-id="@item.Id">
+                    <td>@item.Nome</td>
+                    <td>@item.Login</td>
+                    <td>
+                        <a class="btn btn-primary btn-alterar" role="button"><i class="glyphicon glyphicon-pencil"></i> Alterar</a>
+                        <a class="btn btn-danger btn-excluir" role="button"><i class="glyphicon glyphicon-trash"></i> Excluir</a>
+                    </td>
+                </tr>
+            }
+            else
+            {
+                break;
+            }
+        }
+    }
+}
+
+@section CamposCadastro{
+    <div class="row">
+        <div class="form-group">
+            @Html.Label("txt_nome", "Nome", new { @class = "col-md-3 control-label" })
+            <div class="col-md-6">
+                @Html.TextBox("txt_nome", null, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.Label("txt_login", "Login", new { @class = "col-md-3 control-label" })
+            <div class="col-md-6">
+                @Html.TextBox("txt_login", null, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.Label("txt_senha", "Senha", new { @class = "col-md-3 control-label" })
+            <div class="col-md-6">
+                @Html.TextBox("txt_senha", null, new { @class = "form-control", type = "password" })
+            </div>
+        </div>
+    </div>
+}
+
+@section Scripts{
+    <script>
+            var tituloPagina = '@ViewBag.Title ';
+            var url_excluir = '@Url.Action("ExcluirUsuario", "CadUsuario")';
+            var url_confirmar = '@Url.Action("SalvarUsuario", "CadUsuario")';
+            var url_alterar = '@Url.Action("RecuperarUsuario", "CadUsuario")';
+            var url_page_click = '@Url.Action("UsuarioPagina", "CadUsuario")';
+    </script>
+    <script src="~/Scripts/Cadastro/Usuario.js"></script>
+}
+
