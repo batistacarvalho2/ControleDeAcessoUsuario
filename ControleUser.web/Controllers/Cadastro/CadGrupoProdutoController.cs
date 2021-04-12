@@ -7,11 +7,12 @@ using System.Web.Mvc;
 
 namespace ControleUser.web.Controllers
 {
+    [Authorize(Roles="Gerente,Administrativo,Operador")]
     public class CadGrupoProdutoController : Controller
     {
          private const int _quantMaxLinhasPorPagina = 5;
 
-        [Authorize]
+        
         public ActionResult Index()
         {
             ViewBag.QuantMaxLinhasPorPagina = _quantMaxLinhasPorPagina;
@@ -27,7 +28,6 @@ namespace ControleUser.web.Controllers
         }
 
         [HttpPost]
-        [Authorize]
         [ValidateAntiForgeryToken]
         public JsonResult GrupoProdutoPagina(int pagina)
         {
@@ -37,7 +37,6 @@ namespace ControleUser.web.Controllers
 
 
         [HttpPost]
-        [Authorize]
         [ValidateAntiForgeryToken]
         public JsonResult RecuperarGrupoProduto(int id)
         {
@@ -45,14 +44,13 @@ namespace ControleUser.web.Controllers
         }
 
         [HttpPost]
-        [Authorize]
+        [Authorize(Roles = "Gerente,Administrativo")]
         public JsonResult ExcluirGrupoProduto(int id)
         {
             return Json(GrupoProdutoModel.ExcluirPeloId(id));
         }
 
         [HttpPost]
-        [Authorize]
         public JsonResult SalvarGrupoProduto(GrupoProdutoModel model)
         {
             var resultado = "OK";

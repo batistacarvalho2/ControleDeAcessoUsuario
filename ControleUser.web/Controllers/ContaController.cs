@@ -10,35 +10,39 @@ namespace ControleUser.web.Controllers
 {
     public class ContaController : Controller
     {
-        [AllowAnonymous] 
+        [AllowAnonymous]
         public ActionResult Login(string returnUrl)
         {
             ViewBag.ReturnUrl = returnUrl;
             return View();
         }
-      
+
         [HttpPost]
         [AllowAnonymous]
         public ActionResult Login(LoginViewModel login, string returnUrl)
         {
-            if(!ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 return View(login);
             }
 
             //var achou = (login.Usuario == "joao" && login.Senha == "123");
-            var usuario = (UsuarioModel.ValidarUsuario( login.Usuario, login.Senha));
+            var usuario = (UsuarioModel.ValidarUsuario(login.Usuario, login.Senha));
 
             if (usuario != null)
             {
-                FormsAuthentication.SetAuthCookie(usuario.Nome, login.LembrarMe);
-                if(Url.IsLocalUrl(returnUrl))
+                // FormsAuthentication.SetAuthCookie(usuario.Nome, login.LembrarMe);
+                var tiket = FormsAuthentication.Encrypt(new FormsAuthenticationTicket(1, usuario.Nome, DateTime.Now, DateTime.Now.AddHours(12), login.LembrarMe, "Gerente"));
+                var cookie = new HttpCookie(FormsAuthentication.FormsCookieName, tiket);
+                Response.Cookies.Add(cookie);
+
+                if (Url.IsLocalUrl(returnUrl))
                 {
                     return Redirect(returnUrl);
                 }
                 else
                 {
-                   return RedirectToAction("Index", "Home");
+                    return RedirectToAction("Index", "Home");
                 }
             }
             else
@@ -46,7 +50,7 @@ namespace ControleUser.web.Controllers
                 ModelState.AddModelError("", "Login invalido.");
             }
 
-          
+
             return View(login);
         }
 
