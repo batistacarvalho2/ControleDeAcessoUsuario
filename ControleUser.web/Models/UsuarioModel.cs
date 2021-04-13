@@ -18,10 +18,15 @@ namespace ControleUser.web.Models
 
          [Required(ErrorMessage = "Informe o login")]
         public string Login { get; set; }
+
          [Required(ErrorMessage = "Informe o senha")]
         public string Senha { get; set; }
+
         [Required(ErrorMessage = "Informe o nome")]
         public string Nome { get; set; }
+
+        [Required(ErrorMessage = "Informe o Perfil")]
+        public string IdPerfil { get; set; }
 
         public static UsuarioModel ValidarUsuario(string login, string senha)
         {
@@ -49,7 +54,9 @@ namespace ControleUser.web.Models
                             Id = (int)reader["id"],
                             Login = (string)reader["login"],
                             Senha = (string)reader["senha"],
-                            Nome = (string)reader["nome"]
+                            Nome = (string)reader["nome"],
+                            IdPerfil = (string)reader["id_perfil"]
+
                         };
                     }
                 }
@@ -107,6 +114,7 @@ namespace ControleUser.web.Models
                             Id = (int)reader["id"],
                             Nome = (string)reader["nome"],
                             Login = (string)reader["login"],
+                            IdPerfil = (string)reader["id_perfil"]
                         });
                     }
                 }
@@ -137,7 +145,8 @@ namespace ControleUser.web.Models
                         {
                             Id = (int)reader["id"],
                             Nome = (string)reader["nome"],
-                            Login = (string)reader["login"]
+                            Login = (string)reader["login"],
+                            IdPerfil = (string)reader["id_perfil"]
                         };
                     }
                 }
@@ -185,7 +194,7 @@ namespace ControleUser.web.Models
                 conexao.ConnectionString = ConfigurationManager.ConnectionStrings["principal"].ConnectionString;
                 
 
-                var queryResult = $@"insert into usuario (nome, login, senha) values (@Nome, @login, @senha)";
+                var queryResult = $@"insert into usuario (nome, login, senha, id_perfil) values (@Nome, @login, @senha, @idPerfil)";
                 
                 using (var comando = new NpgsqlCommand(queryResult, conexao))
                 {
@@ -194,7 +203,8 @@ namespace ControleUser.web.Models
                     comando.Parameters.AddWithValue("Nome", NpgsqlTypes.NpgsqlDbType.Varchar, this.Nome);
                     comando.Parameters.AddWithValue("Login", NpgsqlTypes.NpgsqlDbType.Varchar, this.Login);
                     comando.Parameters.AddWithValue("Senha", NpgsqlTypes.NpgsqlDbType.Varchar, CriptoHelper.HashMD5(this.Senha));
-                    
+                    comando.Parameters.AddWithValue("Id_perfil", NpgsqlTypes.NpgsqlDbType.Integer, this.IdPerfil);
+
                     comando.Prepare();
 
                     var res = comando.ExecuteNonQuery();
@@ -225,11 +235,10 @@ namespace ControleUser.web.Models
 
         private bool AtualizaComSenha(UsuarioModel model, NpgsqlConnection conexao)
         {
-            string queryResult = $@"update 
-                                            USUARIO 
-                                    set 
+            string queryResult = $@"update USUARIO set 
                                             nome = @Nome, 
                                             login = @Login, 
+                                            id_perfil=@id_perfil,
                                             senha = @Senha 
                                     where 
                                             id = @Id";
@@ -242,7 +251,8 @@ namespace ControleUser.web.Models
                 comando.Parameters.AddWithValue("Login", NpgsqlTypes.NpgsqlDbType.Varchar, model.Login);
                 comando.Parameters.AddWithValue("Senha", NpgsqlTypes.NpgsqlDbType.Varchar, CriptoHelper.HashMD5(model.Senha));
                 comando.Parameters.AddWithValue("Id", NpgsqlTypes.NpgsqlDbType.Integer, model.Id);
-                
+                comando.Parameters.AddWithValue("Id_perfil", NpgsqlTypes.NpgsqlDbType.Integer, model.IdPerfil);
+
                 comando.Prepare();
 
                 var res = comando.ExecuteNonQuery();

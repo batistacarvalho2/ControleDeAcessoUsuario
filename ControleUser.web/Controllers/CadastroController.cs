@@ -2,14 +2,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 
 namespace ControleUser.web.Controllers
 {
     public class CadastroController : Controller
     {
-         private const int _quantMaxLinhasPorPagina = 5;
+        private const int _quantMaxLinhasPorPagina = 5;
 
         #region Cadastro de Produtos
 
@@ -22,11 +21,11 @@ namespace ControleUser.web.Controllers
             var lista = GrupoProdutoModel.RecuperarLista(ViewBag.PaginaAtual, _quantMaxLinhasPorPagina);
             var quant = GrupoProdutoModel.RecuperarQuantidade();
 
-            var difQuantPaginas = (quant % ViewBag.QuantMaxLinhasPorPagina) > 0? 1 : 0;
-            ViewBag.QuantPaginas = (quant / ViewBag.QuantMaxLinhasPorPagina) + difQuantPaginas;   
+            var difQuantPaginas = (quant % ViewBag.QuantMaxLinhasPorPagina) > 0 ? 1 : 0;
+            ViewBag.QuantPaginas = (quant / ViewBag.QuantMaxLinhasPorPagina) + difQuantPaginas;
 
 
-                return View(lista);
+            return View(lista);
         }
 
         [HttpPost]
@@ -103,12 +102,6 @@ namespace ControleUser.web.Controllers
         }
 
         [Authorize]
-        public ActionResult UnidadeMedida()
-        {
-            return View();
-        }
-
-        [Authorize]
         public ActionResult Produto()
         {
             return View();
@@ -138,13 +131,6 @@ namespace ControleUser.web.Controllers
             return View();
         }
 
-        [Authorize]
-        public ActionResult PerfilUsuario()
-        {
-            return View();
-        }
-
         #endregion
     }
 }
-
