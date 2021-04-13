@@ -68,7 +68,36 @@ namespace ControleUser.web.Models
                 return ret;
             }
 
-            public static PerfilModel RecuperarPeloId(int id)
+        public static List<PerfilModel> RecuperarListaAtivos()
+        {
+            var ret = new List<PerfilModel>();
+
+            using (var conexao = new NpgsqlConnection())
+            {
+                conexao.ConnectionString = ConfigurationManager.ConnectionStrings["principal"].ConnectionString;
+                conexao.Open();
+
+                using (var comando = new NpgsqlCommand())
+                {
+                    comando.Connection = conexao;
+                    comando.CommandText = string.Format("SELECT * FROM perfil where ativo=1 order by nome");
+                    var reader = comando.ExecuteReader();
+
+                    while (reader.Read())
+                    {
+                        ret.Add(new Models.PerfilModel
+                        {
+                            Id = (int)reader["id"],
+                            Nome = (string)reader["nome"],
+                            Ativo = (bool)reader["ativo"],
+                        });
+                    }
+                }
+            }
+            return ret;
+        }
+
+        public static PerfilModel RecuperarPeloId(int id)
             {
                 PerfilModel ret = null;
 

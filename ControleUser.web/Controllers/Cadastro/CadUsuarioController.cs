@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 
 namespace ControleUser.web.Controllers
@@ -15,8 +14,8 @@ namespace ControleUser.web.Controllers
         [Authorize]
         public ActionResult Index()
         {
+            ViewBag.ListaPerfi = PerfilModel.RecuperarListaAtivos();
             ViewBag.SenhaPadrao = _senhaPadrao;
-
             ViewBag.QuantMaxLinhasPorPagina = _quantMaxLinhasPorPagina;
             ViewBag.PaginaAtual = 1;
 

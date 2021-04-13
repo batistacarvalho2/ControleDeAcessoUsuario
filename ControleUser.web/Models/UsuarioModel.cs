@@ -26,7 +26,7 @@ namespace ControleUser.web.Models
         public string Nome { get; set; }
 
         [Required(ErrorMessage = "Informe o Perfil")]
-        public string IdPerfil { get; set; }
+        public int IdPerfil { get; set; }
 
         public static UsuarioModel ValidarUsuario(string login, string senha)
         {
@@ -55,7 +55,7 @@ namespace ControleUser.web.Models
                             Login = (string)reader["login"],
                             Senha = (string)reader["senha"],
                             Nome = (string)reader["nome"],
-                            IdPerfil = (string)reader["id_perfil"]
+                            IdPerfil = (int)reader["id_perfil"]
 
                         };
                     }
@@ -114,7 +114,7 @@ namespace ControleUser.web.Models
                             Id = (int)reader["id"],
                             Nome = (string)reader["nome"],
                             Login = (string)reader["login"],
-                            IdPerfil = (string)reader["id_perfil"]
+                            IdPerfil = (int)reader["id_perfil"]
                         });
                     }
                 }
@@ -146,7 +146,7 @@ namespace ControleUser.web.Models
                             Id = (int)reader["id"],
                             Nome = (string)reader["nome"],
                             Login = (string)reader["login"],
-                            IdPerfil = (string)reader["id_perfil"]
+                            IdPerfil = (int)reader["id_perfil"]
                         };
                     }
                 }
