@@ -12,7 +12,6 @@ namespace ControleUser.web.Controllers.Cadastro
 
             private const int _quantMaxLinhasPorPagina = 5;
 
-
             public ActionResult Index()
             {
                 ViewBag.QuantMaxLinhasPorPagina = _quantMaxLinhasPorPagina;

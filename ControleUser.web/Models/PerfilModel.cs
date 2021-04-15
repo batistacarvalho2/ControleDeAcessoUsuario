@@ -9,7 +9,6 @@ namespace ControleUser.web.Models
 {
     public class PerfilModel
     {
-
             public int Id { get; set; }
 
             [Required(ErrorMessage = "Preencha o nome.")]
@@ -80,7 +79,7 @@ namespace ControleUser.web.Models
                 using (var comando = new NpgsqlCommand())
                 {
                     comando.Connection = conexao;
-                    comando.CommandText = string.Format("SELECT * FROM perfil where ativo=1 order by nome");
+                    comando.CommandText = string.Format("SELECT * FROM perfil where ativo='1' order by nome");
                     var reader = comando.ExecuteReader();
 
                     while (reader.Read())
@@ -96,6 +95,7 @@ namespace ControleUser.web.Models
             }
             return ret;
         }
+
 
         public static PerfilModel RecuperarPeloId(int id)
             {
@@ -153,7 +153,7 @@ namespace ControleUser.web.Models
                 return ret;
             }
 
-            public int Salvar() //Apenas inclui os dados no banco!
+            public int Salvar()
             {
                 var model = RecuperarPeloId(this.Id);
 
@@ -174,46 +174,47 @@ namespace ControleUser.web.Models
                 }
             }
 
-            private bool IncluirRegistro(PerfilModel model, NpgsqlConnection conexao)
+        private bool IncluirRegistro(PerfilModel model, NpgsqlConnection conexao)
+        {
+            var queryResult = $@"insert into perfil (nome, ativo) values (@Nome, @Ativo)";
+            using (var comando = new NpgsqlCommand(queryResult, conexao))
             {
-                var queryResult = $@"insert into perfil (nome, ativo) values (@Nome, @Ativo)";
-                using (var comando = new NpgsqlCommand(queryResult, conexao))
+                if (model == null)
                 {
-                    if (model == null)
-                    {
-                        comando.Parameters.AddWithValue("Nome", NpgsqlTypes.NpgsqlDbType.Varchar, this.Nome);
-                        comando.Parameters.AddWithValue("Ativo", NpgsqlTypes.NpgsqlDbType.Boolean, this.Ativo);
-                        comando.Prepare();
-
-                        comando.ExecuteNonQuery();
-                        return true;
-                    }
-                }
-
-                return false;
-            }
-
-            private bool Update(PerfilModel model, NpgsqlConnection conexao)
-            {
-                var queryResult = $@"update grupo_produto set nome = @Nome, ativo = @Ativo where id = @Id";
-                using (var comando = new NpgsqlCommand(queryResult, conexao))
-                {
-                    comando.Parameters.AddWithValue("Nome", NpgsqlTypes.NpgsqlDbType.Varchar, model.Nome);
-                    comando.Parameters.AddWithValue("Ativo", NpgsqlTypes.NpgsqlDbType.Boolean, model.Ativo);
-                    comando.Parameters.AddWithValue("Id", NpgsqlTypes.NpgsqlDbType.Integer, model.Id);
+                    comando.Parameters.AddWithValue("Nome", NpgsqlTypes.NpgsqlDbType.Varchar, this.Nome);
+                    comando.Parameters.AddWithValue("Ativo", NpgsqlTypes.NpgsqlDbType.Boolean, this.Ativo);
                     comando.Prepare();
 
-                    if (comando.ExecuteNonQuery() > 0)
-                    {
-                        return true;
-                    }
-                    else
-                    {
-                        return false;
-                    }
-
+                    comando.ExecuteNonQuery();
+                    return true;
                 }
             }
+
+            return false;
         }
+
+        private bool Update(PerfilModel model, NpgsqlConnection conexao)
+        {
+            var queryResult = $@"update grupo_produto set nome = @Nome, ativo = @Ativo where id = @Id";
+            using (var comando = new NpgsqlCommand(queryResult, conexao))
+            {
+                comando.Parameters.AddWithValue("Nome", NpgsqlTypes.NpgsqlDbType.Varchar, model.Nome);
+                comando.Parameters.AddWithValue("Ativo", NpgsqlTypes.NpgsqlDbType.Boolean, model.Ativo);
+                comando.Parameters.AddWithValue("Id", NpgsqlTypes.NpgsqlDbType.Integer, model.Id);
+                comando.Prepare();
+
+                if (comando.ExecuteNonQuery() > 0)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+
+            }
+        }
+
+    }
 
 }

@@ -191,11 +191,9 @@ namespace ControleUser.web.Models
         {
             using (var conexao = new NpgsqlConnection())
             {
-                conexao.ConnectionString = ConfigurationManager.ConnectionStrings["principal"].ConnectionString;
-                
-
-                var queryResult = $@"insert into usuario (nome, login, senha, id_perfil) values (@Nome, @login, @senha, @idPerfil)";
-                
+                conexao.ConnectionString = ConfigurationManager.ConnectionStrings["principal"].ConnectionString;              
+                var queryResult = $@"insert into usuario (nome, login, senha, id_perfil) values (@nome, @login, @senha, @id_Perfil)";
+        
                 using (var comando = new NpgsqlCommand(queryResult, conexao))
                 {
                     conexao.Open();
@@ -235,23 +233,23 @@ namespace ControleUser.web.Models
 
         private bool AtualizaComSenha(UsuarioModel model, NpgsqlConnection conexao)
         {
-            string queryResult = $@"update USUARIO set 
-                                            nome = @Nome, 
-                                            login = @Login, 
+            string queryResult = $@"update usuario set 
+                                            nome = @nome, 
+                                            login = @login, 
                                             id_perfil=@id_perfil,
-                                            senha = @Senha 
+                                            senha = @senha 
                                     where 
-                                            id = @Id";
+                                            id = @id";
 
             using (var comando = new NpgsqlCommand(queryResult, conexao))
             {
                 conexao.Open();
 
-                comando.Parameters.AddWithValue("Nome", NpgsqlTypes.NpgsqlDbType.Varchar, model.Nome);
-                comando.Parameters.AddWithValue("Login", NpgsqlTypes.NpgsqlDbType.Varchar, model.Login);
-                comando.Parameters.AddWithValue("Senha", NpgsqlTypes.NpgsqlDbType.Varchar, CriptoHelper.HashMD5(model.Senha));
-                comando.Parameters.AddWithValue("Id", NpgsqlTypes.NpgsqlDbType.Integer, model.Id);
-                comando.Parameters.AddWithValue("Id_perfil", NpgsqlTypes.NpgsqlDbType.Integer, model.IdPerfil);
+                comando.Parameters.AddWithValue("nome", NpgsqlTypes.NpgsqlDbType.Varchar, model.Nome);
+                comando.Parameters.AddWithValue("login", NpgsqlTypes.NpgsqlDbType.Varchar, model.Login);
+                comando.Parameters.AddWithValue("senha", NpgsqlTypes.NpgsqlDbType.Varchar, CriptoHelper.HashMD5(model.Senha));
+                comando.Parameters.AddWithValue("id", NpgsqlTypes.NpgsqlDbType.Integer, model.Id);
+                comando.Parameters.AddWithValue("id_perfil", NpgsqlTypes.NpgsqlDbType.Integer, model.IdPerfil);
 
                 comando.Prepare();
 
@@ -268,21 +266,23 @@ namespace ControleUser.web.Models
 
         private bool AtualizaSemSenha(UsuarioModel model, NpgsqlConnection conexao)
         {
-            string queryResult = $@"update 
-                                            usuario 
-                                    set 
-                                            nome=@Nome, 
-                                            login=@Login
+            string queryResult = $@"update usuario set 
+                                            nome=@nome, 
+                                            login=@login,
+                                            id_perfil=@id_perfil
+
                                     where 
-                                            id=@Id";
+                                            id=@id";
             
             using (var comando = new NpgsqlCommand(queryResult, conexao))
             {
                 conexao.Open();
 
-                comando.Parameters.AddWithValue("@Nome", NpgsqlTypes.NpgsqlDbType.Varchar, model.Nome);
-                comando.Parameters.AddWithValue("@Login", NpgsqlTypes.NpgsqlDbType.Varchar, model.Login);
-                comando.Parameters.AddWithValue("@Id", NpgsqlTypes.NpgsqlDbType.Integer, model.Id);
+                comando.Parameters.AddWithValue("nome", NpgsqlTypes.NpgsqlDbType.Varchar, model.Nome);
+                comando.Parameters.AddWithValue("login", NpgsqlTypes.NpgsqlDbType.Varchar, model.Login);
+                comando.Parameters.AddWithValue("id", NpgsqlTypes.NpgsqlDbType.Integer, model.Id);
+                comando.Parameters.AddWithValue("id_perfil", NpgsqlTypes.NpgsqlDbType.Integer, model.IdPerfil);
+
                 comando.Prepare();
 
                 var res = comando.ExecuteNonQuery();

@@ -14,13 +14,13 @@ namespace ControleUser.web.Controllers
         [Authorize]
         public ActionResult Index()
         {
-            ViewBag.ListaPerfi = PerfilModel.RecuperarListaAtivos();
+            ViewBag.ListaPerfil = PerfilModel.RecuperarListaAtivos();
             ViewBag.SenhaPadrao = _senhaPadrao;
             ViewBag.QuantMaxLinhasPorPagina = _quantMaxLinhasPorPagina;
             ViewBag.PaginaAtual = 1;
 
             var lista = UsuarioModel.RecuperarLista(ViewBag.PaginaAtual, _quantMaxLinhasPorPagina);
-            var quant = UsuarioModel.RecuperarQuantidade();
+            var quant = GrupoProdutoModel.RecuperarQuantidade();
 
             var difQuantPaginas = (quant % ViewBag.QuantMaxLinhasPorPagina) > 0 ? 1 : 0;
             ViewBag.QuantPaginas = (quant / ViewBag.QuantMaxLinhasPorPagina) + difQuantPaginas;
