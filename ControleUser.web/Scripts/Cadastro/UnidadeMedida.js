@@ -1,6 +1,4 @@
-﻿const { param } = require("jquery");
-
-function set_dados_forms(dados) {
+﻿function set_dados_forms(dados) {
     $('#id_cadastro').val(dados.Id);
     $('#txt_nome').val(dados.Nome);
     $('#txt_sigla').val(dados.Sigla);

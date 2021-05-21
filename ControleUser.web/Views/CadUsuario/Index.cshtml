@@ -48,7 +48,7 @@
             </div>
         </div>
         <div class="form-group">
-            @Html.Label("txt_login", "Login", new { @class = "col-md-3 control-label" })
+            @Html.Label("txt_login", "Login", new { @class = "col-md-6 control-label" })
             <div class="col-md-6">
                 @Html.TextBox("txt_login", null, new { @class = "form-control" })
             </div>
@@ -58,17 +58,24 @@
             <div class="col-md-6">
                 @Html.TextBox("txt_senha", null, new { @class = "form-control", type = "password" })
             </div>
+        </div>  
+        <div class="form-group">
+            @Html.Label("txt_perfil", "Perfil", new { @class = "col-md-3 control-label" })
+            <div class="col-md-6">
+                @Html.DropDownList("ddl_perfil", new SelectList(ViewBag.ListaPerfil, "Id", "Nome"), new { @class = "col-md-6 control-label" })
+            </div>
         </div>
     </div>
 }
 
 @section Scripts{
     <script>
-            var tituloPagina = '@ViewBag.Title ';
+            var tituloPagina = '@ViewBag.Title';
             var url_excluir = '@Url.Action("ExcluirUsuario", "CadUsuario")';
             var url_confirmar = '@Url.Action("SalvarUsuario", "CadUsuario")';
-            var url_alterar = '@Url.Action("RecuperarUsuario", "CadUsuario")';
             var url_page_click = '@Url.Action("UsuarioPagina", "CadUsuario")';
+            var url_alterar = '@Url.Action("RecuperarUsuario", "CadUsuario")';
+
     </script>
     <script src="~/Scripts/Cadastro/Usuario.js"></script>
 }

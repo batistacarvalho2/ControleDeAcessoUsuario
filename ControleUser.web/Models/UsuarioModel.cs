@@ -5,10 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Configuration;
-using System.Data;
-using System.Data.SqlClient;
-using System.Linq;
-using System.Web;
+
 
 namespace ControleUser.web.Models
 {
@@ -18,10 +15,15 @@ namespace ControleUser.web.Models
 
          [Required(ErrorMessage = "Informe o login")]
         public string Login { get; set; }
+
          [Required(ErrorMessage = "Informe o senha")]
         public string Senha { get; set; }
+
         [Required(ErrorMessage = "Informe o nome")]
         public string Nome { get; set; }
+
+        [Required(ErrorMessage = "Informe o Perfil")]
+        public int IdPerfil { get; set; }
 
         public static UsuarioModel ValidarUsuario(string login, string senha)
         {
@@ -32,7 +34,8 @@ namespace ControleUser.web.Models
                 conexao.ConnectionString = ConfigurationManager.ConnectionStrings["principal"].ConnectionString;
                 conexao.Open();
 
-                NpgsqlCommand comando = new NpgsqlCommand(string.Format("select * from usuario where login=@login and senha=@senha", login, CriptoHelper.HashMD5(senha)), conexao);
+                NpgsqlCommand comando = new NpgsqlCommand(string.Format(
+                    "select * from usuario where login=@login and senha=@senha", login, CriptoHelper.HashMD5(senha)), conexao);
 
                 comando.Parameters.Add("@login", NpgsqlDbType.Varchar).Value = login;
                 comando.Parameters.Add("@senha", NpgsqlDbType.Varchar).Value = CriptoHelper.HashMD5(senha);
@@ -49,7 +52,9 @@ namespace ControleUser.web.Models
                             Id = (int)reader["id"],
                             Login = (string)reader["login"],
                             Senha = (string)reader["senha"],
-                            Nome = (string)reader["nome"]
+                            Nome = (string)reader["nome"],
+                            IdPerfil = (int)reader["id_perfil"]
+
                         };
                     }
                 }
@@ -107,6 +112,7 @@ namespace ControleUser.web.Models
                             Id = (int)reader["id"],
                             Nome = (string)reader["nome"],
                             Login = (string)reader["login"],
+                            IdPerfil = (int)reader["id_perfil"]
                         });
                     }
                 }
@@ -137,7 +143,8 @@ namespace ControleUser.web.Models
                         {
                             Id = (int)reader["id"],
                             Nome = (string)reader["nome"],
-                            Login = (string)reader["login"]
+                            Login = (string)reader["login"],
+                            IdPerfil = (int)reader["id_perfil"]
                         };
                     }
                 }
@@ -182,11 +189,9 @@ namespace ControleUser.web.Models
         {
             using (var conexao = new NpgsqlConnection())
             {
-                conexao.ConnectionString = ConfigurationManager.ConnectionStrings["principal"].ConnectionString;
-                
-
-                var queryResult = $@"insert into usuario (nome, login, senha) values (@Nome, @login, @senha)";
-                
+                conexao.ConnectionString = ConfigurationManager.ConnectionStrings["principal"].ConnectionString;              
+                var queryResult = $@"insert into usuario (nome, login, senha, id_perfil) values (@nome, @login, @senha, @id_Perfil)";
+        
                 using (var comando = new NpgsqlCommand(queryResult, conexao))
                 {
                     conexao.Open();
@@ -194,7 +199,8 @@ namespace ControleUser.web.Models
                     comando.Parameters.AddWithValue("Nome", NpgsqlTypes.NpgsqlDbType.Varchar, this.Nome);
                     comando.Parameters.AddWithValue("Login", NpgsqlTypes.NpgsqlDbType.Varchar, this.Login);
                     comando.Parameters.AddWithValue("Senha", NpgsqlTypes.NpgsqlDbType.Varchar, CriptoHelper.HashMD5(this.Senha));
-                    
+                    comando.Parameters.AddWithValue("Id_perfil", NpgsqlTypes.NpgsqlDbType.Integer, this.IdPerfil);
+
                     comando.Prepare();
 
                     var res = comando.ExecuteNonQuery();
@@ -225,24 +231,24 @@ namespace ControleUser.web.Models
 
         private bool AtualizaComSenha(UsuarioModel model, NpgsqlConnection conexao)
         {
-            string queryResult = $@"update 
-                                            USUARIO 
-                                    set 
-                                            nome = @Nome, 
-                                            login = @Login, 
-                                            senha = @Senha 
+            string queryResult = $@"update usuario set 
+                                            nome = @nome, 
+                                            login = @login, 
+                                            id_perfil=@id_perfil,
+                                            senha = @senha 
                                     where 
-                                            id = @Id";
+                                            id = @id";
 
             using (var comando = new NpgsqlCommand(queryResult, conexao))
             {
                 conexao.Open();
 
-                comando.Parameters.AddWithValue("Nome", NpgsqlTypes.NpgsqlDbType.Varchar, model.Nome);
-                comando.Parameters.AddWithValue("Login", NpgsqlTypes.NpgsqlDbType.Varchar, model.Login);
-                comando.Parameters.AddWithValue("Senha", NpgsqlTypes.NpgsqlDbType.Varchar, CriptoHelper.HashMD5(model.Senha));
-                comando.Parameters.AddWithValue("Id", NpgsqlTypes.NpgsqlDbType.Integer, model.Id);
-                
+                comando.Parameters.AddWithValue("nome", NpgsqlTypes.NpgsqlDbType.Varchar, model.Nome);
+                comando.Parameters.AddWithValue("login", NpgsqlTypes.NpgsqlDbType.Varchar, model.Login);
+                comando.Parameters.AddWithValue("senha", NpgsqlTypes.NpgsqlDbType.Varchar, CriptoHelper.HashMD5(model.Senha));
+                comando.Parameters.AddWithValue("id", NpgsqlTypes.NpgsqlDbType.Integer, model.Id);
+                comando.Parameters.AddWithValue("id_perfil", NpgsqlTypes.NpgsqlDbType.Integer, model.IdPerfil);
+
                 comando.Prepare();
 
                 var res = comando.ExecuteNonQuery();
@@ -258,21 +264,23 @@ namespace ControleUser.web.Models
 
         private bool AtualizaSemSenha(UsuarioModel model, NpgsqlConnection conexao)
         {
-            string queryResult = $@"update 
-                                            usuario 
-                                    set 
-                                            nome=@Nome, 
-                                            login=@Login
+            string queryResult = $@"update usuario set 
+                                            nome=@nome, 
+                                            login=@login,
+                                            id_perfil=@id_perfil
+
                                     where 
-                                            id=@Id";
+                                            id=@id";
             
             using (var comando = new NpgsqlCommand(queryResult, conexao))
             {
                 conexao.Open();
 
-                comando.Parameters.AddWithValue("@Nome", NpgsqlTypes.NpgsqlDbType.Varchar, model.Nome);
-                comando.Parameters.AddWithValue("@Login", NpgsqlTypes.NpgsqlDbType.Varchar, model.Login);
-                comando.Parameters.AddWithValue("@Id", NpgsqlTypes.NpgsqlDbType.Integer, model.Id);
+                comando.Parameters.AddWithValue("nome", NpgsqlTypes.NpgsqlDbType.Varchar, model.Nome);
+                comando.Parameters.AddWithValue("login", NpgsqlTypes.NpgsqlDbType.Varchar, model.Login);
+                comando.Parameters.AddWithValue("id", NpgsqlTypes.NpgsqlDbType.Integer, model.Id);
+                comando.Parameters.AddWithValue("id_perfil", NpgsqlTypes.NpgsqlDbType.Integer, model.IdPerfil);
+
                 comando.Prepare();
 
                 var res = comando.ExecuteNonQuery();
