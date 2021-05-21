@@ -5,10 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Configuration;
-using System.Data;
-using System.Data.SqlClient;
-using System.Linq;
-using System.Web;
+
 
 namespace ControleUser.web.Models
 {
@@ -37,7 +34,8 @@ namespace ControleUser.web.Models
                 conexao.ConnectionString = ConfigurationManager.ConnectionStrings["principal"].ConnectionString;
                 conexao.Open();
 
-                NpgsqlCommand comando = new NpgsqlCommand(string.Format("select * from usuario where login=@login and senha=@senha", login, CriptoHelper.HashMD5(senha)), conexao);
+                NpgsqlCommand comando = new NpgsqlCommand(string.Format(
+                    "select * from usuario where login=@login and senha=@senha", login, CriptoHelper.HashMD5(senha)), conexao);
 
                 comando.Parameters.Add("@login", NpgsqlDbType.Varchar).Value = login;
                 comando.Parameters.Add("@senha", NpgsqlDbType.Varchar).Value = CriptoHelper.HashMD5(senha);

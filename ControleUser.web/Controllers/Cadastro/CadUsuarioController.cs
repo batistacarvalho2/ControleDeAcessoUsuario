@@ -6,12 +6,12 @@ using System.Web.Mvc;
 
 namespace ControleUser.web.Controllers
 {
+    [Authorize(Roles = "Gerente")]
     public class CadUsuarioController : Controller
     {
         private const int _quantMaxLinhasPorPagina = 5;
         private const string _senhaPadrao = "{$127,$188}";
 
-        [Authorize]
         public ActionResult Index()
         {
             ViewBag.ListaPerfil = PerfilModel.RecuperarListaAtivos();
@@ -44,7 +44,6 @@ namespace ControleUser.web.Controllers
         }
 
         [HttpPost]
-        [Authorize]
         public ActionResult ExcluirUsuario(int id)
         {
             return Json(UsuarioModel.ExcluirPeloId(id));
