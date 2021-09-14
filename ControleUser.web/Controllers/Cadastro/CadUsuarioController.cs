@@ -9,7 +9,7 @@ namespace ControleUser.web.Controllers
     [Authorize(Roles = "Gerente")]
     public class CadUsuarioController : Controller
     {
-        private const int _quantMaxLinhasPorPagina = 5;
+        private const int _quantMaxLinhasPorPagina = 10;
         private const string _senhaPadrao = "{$127,$188}";
 
         public ActionResult Index()

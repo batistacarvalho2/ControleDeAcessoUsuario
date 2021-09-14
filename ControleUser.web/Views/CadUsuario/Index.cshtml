@@ -10,7 +10,9 @@
 
 @section TituloGrid{
     <th>Nome</th>
+    <th>Email</th>
     <th>Login</th>
+    <th>Ativo</th>
     <th>Ação</th>
 }
 
@@ -22,9 +24,12 @@
             linha++;
             if (linha < ViewBag.QuantMaxLinhasPorPagina)
             {
+                var ativo = (item.Ativo ? "SIM" : "NÃO");
                 <tr data-id="@item.Id">
                     <td>@item.Nome</td>
+                    <td>@item.Email</td>
                     <td>@item.Login</td>
+                    <td>@ativo</td>
                     <td>
                         <a class="btn btn-primary btn-alterar" role="button"><i class="glyphicon glyphicon-pencil"></i> Alterar</a>
                         <a class="btn btn-danger btn-excluir" role="button"><i class="glyphicon glyphicon-trash"></i> Excluir</a>
@@ -48,7 +53,14 @@
             </div>
         </div>
         <div class="form-group">
-            @Html.Label("txt_login", "Login", new { @class = "col-md-6 control-label" })
+            @Html.Label("txt_email", "Email", new { @class = "col-md-3 control-label" })
+            <div class="col-md-6">
+                @Html.TextBox("txt_email", null, new { @class = "form-control" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.Label("txt_login", "Login", new { @class = "col-md-3 control-label" })
             <div class="col-md-6">
                 @Html.TextBox("txt_login", null, new { @class = "form-control" })
             </div>
@@ -58,11 +70,17 @@
             <div class="col-md-6">
                 @Html.TextBox("txt_senha", null, new { @class = "form-control", type = "password" })
             </div>
-        </div>  
+        </div>
         <div class="form-group">
-            @Html.Label("txt_perfil", "Perfil", new { @class = "col-md-3 control-label" })
+            @Html.Label("txt_perfil", "Cargo", new { @class = "col-md-3 control-label" })
             <div class="col-md-6">
                 @Html.DropDownList("ddl_perfil", new SelectList(ViewBag.ListaPerfil, "Id", "Nome"), new { @class = "col-md-6 control-label" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.Label("cbx_ativo", "Ativo", new { @class = "col-md-3 control-label" })
+            <div class="col-md-9">
+                @Html.CheckBox("cbx_ativo")
             </div>
         </div>
     </div>

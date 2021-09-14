@@ -88,6 +88,7 @@ namespace ControleUser.web.Models
                         {
                             Id = (int)reader["id"],
                             Nome = (string)reader["nome"],
+                            
                             Ativo = (bool)reader["ativo"],
                         });
                     }

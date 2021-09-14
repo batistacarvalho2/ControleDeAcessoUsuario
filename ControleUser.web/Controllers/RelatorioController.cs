@@ -10,12 +10,12 @@ namespace ControleUser.web.Controllers
     {
         // GET: Relatorio
         [Authorize]
-        public ActionResult PosicaoEstoque()
+        public ActionResult ListaUsuario()
         {
             return View();
         }
         [Authorize]
-        public ActionResult Ressuprimento()
+        public ActionResult ListaGrupoUsuario()
         {
             return View();
         }
