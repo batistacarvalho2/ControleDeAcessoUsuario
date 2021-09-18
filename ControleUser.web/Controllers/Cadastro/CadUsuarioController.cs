@@ -49,16 +49,15 @@ namespace ControleUser.web.Controllers
             return Json(UsuarioModel.ExcluirPeloId(id));
         }
 
+
         [HttpPost]
         public ActionResult SalvarUsuario(UsuarioModel model)
         {
-            var resultado = "OK";
             var mensagens = new List<string>();
             var idSalvo = string.Empty;
 
             if (!ModelState.IsValid)
             {
-                resultado = "AVISO";
                 mensagens = ModelState.Values.SelectMany(x => x.Errors).Select(x => x.ErrorMessage).ToList();
             }
             else
@@ -70,24 +69,28 @@ namespace ControleUser.web.Controllers
                         model.Senha = "";
 
                     }
-                    if (model.Salvar(model))
+                    if (model.ValidaUsuarioEmail(model))
                     {
-                        // ok
+                        // Validacao de Email
+                        // SE passar
+                        if (!model.Salvar(model))
+                        {
+                            return Json(new { StatusCode = 400, Data = model, ErrorMessage = "Erro ao cadastrar/atualizar os dados do Usuário"});
+                        }
+                            
+                        // Se nao, lança o erro
+
                     }
                     else
-                    {
-                        resultado = "ERRO";
-                    }
-
+                        return Json(new { StatusCode = 400, Data = model, ErrorMessage = "Usuário/Email já cadastrado!" });
                 }
                 catch (Exception)
                 {
                     throw;
                 }
             }
-            //objeto anonimo
-            return Json(new { Resultado = resultado, Mensagens = mensagens, IdSalvo = idSalvo });
-        }
 
+            return Json(new { StatusCode = 200, Data = model });
+        }
     }
 }

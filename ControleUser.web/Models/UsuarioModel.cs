@@ -13,16 +13,18 @@ namespace ControleUser.web.Models
     {
         public int Id { get; set; }
 
-         [Required(ErrorMessage = "Informe o login")]
+        [Required(ErrorMessage = "Informe o login")]
         public string Login { get; set; }
 
-         [Required(ErrorMessage = "Informe o senha")]
+        [Required(ErrorMessage = "Informe o senha")]
         public string Senha { get; set; }
 
         [Required(ErrorMessage = "Informe o nome")]
         public string Nome { get; set; }
 
         [Required(ErrorMessage = "Informe o E-mail")]
+        [EmailAddress(ErrorMessage = "E-mail em formato inválido.")]
+        [RegularExpression(@"(\w+@\w+\.\w+)(\.\w+)?", ErrorMessage = "E-mail em formato inválido.")]
         public string Email { get; set; }
 
         [Required(ErrorMessage = "Informe o Cargo")]
@@ -78,6 +80,38 @@ namespace ControleUser.web.Models
             return ret;
         }
 
+        public bool ValidaUsuarioEmail(UsuarioModel login)
+        {
+
+            using (var conexao = new NpgsqlConnection())
+            {
+                conexao.ConnectionString = ConfigurationManager.ConnectionStrings["principal"].ConnectionString;
+
+                NpgsqlCommand comando = new NpgsqlCommand("select login from usuario where login = @login OR email = @email", conexao);
+
+                conexao.Open();
+                comando.Parameters.Add("@login", NpgsqlDbType.Varchar).Value = login.Login;
+                comando.Parameters.Add("@email", NpgsqlDbType.Varchar).Value = login.Email;
+
+                try
+                {
+                    var teste = comando.ExecuteScalar();
+
+                    return teste == null ? true : false;
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("Login já cadastrado " + e);
+                    throw;
+                }
+                finally
+                {
+                    conexao.Close();
+                }
+            }
+        }
+
+       
         public static int RecuperarQuantidade()
         {
             var ret = 0;
@@ -199,13 +233,13 @@ namespace ControleUser.web.Models
                 return AtualizaUsuario(model);
         }
 
+
         private bool SalvarUsuario()
         {
             using (var conexao = new NpgsqlConnection())
             {
-                conexao.ConnectionString = ConfigurationManager.ConnectionStrings["principal"].ConnectionString;              
+                conexao.ConnectionString = ConfigurationManager.ConnectionStrings["principal"].ConnectionString;
                 var queryResult = $@"insert into usuario (nome, email, login, senha, id_perfil, ativo) values (@nome, @email, @login, @senha, @id_Perfil, @ativo)";
-        
                 using (var comando = new NpgsqlCommand(queryResult, conexao))
                 {
                     conexao.Open();
@@ -220,13 +254,14 @@ namespace ControleUser.web.Models
                     comando.Prepare();
 
                     var res = comando.ExecuteNonQuery();
-                    
+
                     conexao.Close();
 
                     if (res > 0)
                         return true;
                     else
                         return false;
+
                 }
             }
         }
@@ -237,7 +272,7 @@ namespace ControleUser.web.Models
             using (var conexao = new NpgsqlConnection())
             {
                 conexao.ConnectionString = ConfigurationManager.ConnectionStrings["principal"].ConnectionString;
-               
+
                 if (string.IsNullOrEmpty(model.Senha))
                     return AtualizaSemSenha(model, conexao);
                 else
@@ -282,6 +317,7 @@ namespace ControleUser.web.Models
             }
         }
 
+
         private bool AtualizaSemSenha(UsuarioModel model, NpgsqlConnection conexao)
         {
             string queryResult = $@"update usuario set 
@@ -293,7 +329,7 @@ namespace ControleUser.web.Models
 
                                     where 
                                             id=@id";
-            
+
             using (var comando = new NpgsqlCommand(queryResult, conexao))
             {
                 conexao.Open();
@@ -310,8 +346,8 @@ namespace ControleUser.web.Models
                 var res = comando.ExecuteNonQuery();
 
                 conexao.Close();
-                
-                if(res > 0)
+
+                if (res > 0)
                     return true;
                 else
                     return false;
