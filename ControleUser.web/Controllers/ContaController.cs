@@ -48,8 +48,6 @@ namespace ControleUser.web.Controllers
             {
                 ModelState.AddModelError("", "Login invalido.");
             }
-
-
             return View(login);
         }
 

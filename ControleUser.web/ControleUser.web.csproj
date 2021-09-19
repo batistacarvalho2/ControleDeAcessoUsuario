@@ -251,9 +251,6 @@
     <Content Include="Views\Relatorio\ListaUsuario.cshtml" />
     <Content Include="Views\Relatorio\ListaGrupoUsuario.cshtml" />
     <Content Include="Views\Operacao\EntradaEstoque.cshtml" />
-    <Content Include="Views\Operacao\SaidaEstoque.cshtml" />
-    <Content Include="Views\Operacao\Inventario.cshtml" />
-    <Content Include="Views\Operacao\LanPerdaProduto.cshtml" />
     <Content Include="Views\Conta\Login.cshtml" />
     <Content Include="Views\Shared\_Cadastro.cshtml" />
     <Content Include="Views\CadUnidadeMedida\Index.cshtml" />

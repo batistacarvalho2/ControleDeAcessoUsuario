@@ -6,7 +6,8 @@ using System.Web.Mvc;
 
 namespace ControleUser.web.Controllers.Cadastro
 {
-    [Authorize(Roles = "Gerente")]
+
+    [Authorize(Roles = "Admistrador,Gerente")]
     public class CadPerfilController : Controller
     {
 

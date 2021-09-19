@@ -95,11 +95,6 @@ namespace ControleUser.web.Controllers
             return View();
         }
 
-        [Authorize]
-        public ActionResult LocalProduto()
-        {
-            return View();
-        }
 
         [Authorize]
         public ActionResult Produto()
@@ -107,29 +102,7 @@ namespace ControleUser.web.Controllers
             return View();
         }
 
-        [Authorize]
-        public ActionResult Pais()
-        {
-            return View();
-        }
 
-        [Authorize]
-        public ActionResult Estado()
-        {
-            return View();
-        }
-
-        [Authorize]
-        public ActionResult Cidade()
-        {
-            return View();
-        }
-
-        [Authorize]
-        public ActionResult Fornecedor()
-        {
-            return View();
-        }
 
         #endregion
     }

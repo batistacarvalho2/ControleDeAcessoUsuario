@@ -15,6 +15,9 @@ namespace ControleUser.web.Models
 
         [Required(ErrorMessage = "Informe o login")]
         public string Login { get; set; }
+        
+        [Required(ErrorMessage = "Infome o cargo")]
+        public string Cargo { get; set; }
 
         [Required(ErrorMessage = "Informe o senha")]
         public string Senha { get; set; }
@@ -60,10 +63,11 @@ namespace ControleUser.web.Models
                         ret = new UsuarioModel
                         {
                             Id = (int)reader["id"],
-                            Login = (string)reader["login"],
+                            Login = (string)reader["login"],                            
                             Senha = (string)reader["senha"],
                             Nome = (string)reader["nome"],
                             Email = (string)reader["email"],
+                            Cargo = (string)reader["cargo"],
                             IdPerfil = (int)reader["id_perfil"],
                             Ativo = (bool)reader["ativo"]
 
@@ -80,24 +84,21 @@ namespace ControleUser.web.Models
             return ret;
         }
 
-        public bool ValidaUsuarioEmail(UsuarioModel login)
+        public bool ValidaLogin(UsuarioModel login)
         {
 
             using (var conexao = new NpgsqlConnection())
             {
                 conexao.ConnectionString = ConfigurationManager.ConnectionStrings["principal"].ConnectionString;
-
-                NpgsqlCommand comando = new NpgsqlCommand("select login from usuario where login = @login OR email = @email", conexao);
+                NpgsqlCommand comando = new NpgsqlCommand("select login from usuario where login = @login", conexao);
 
                 conexao.Open();
                 comando.Parameters.Add("@login", NpgsqlDbType.Varchar).Value = login.Login;
-                comando.Parameters.Add("@email", NpgsqlDbType.Varchar).Value = login.Email;
-
+                
                 try
                 {
-                    var teste = comando.ExecuteScalar();
-
-                    return teste == null ? true : false;
+                    var countLogin = comando.ExecuteScalar();
+                    return countLogin == null ? true : false;
                 }
                 catch (Exception e)
                 {
@@ -111,7 +112,36 @@ namespace ControleUser.web.Models
             }
         }
 
-       
+        public bool ValidaEmail(UsuarioModel email)
+        {
+
+            using (var conexao = new NpgsqlConnection())
+            {
+                conexao.ConnectionString = ConfigurationManager.ConnectionStrings["principal"].ConnectionString;
+                NpgsqlCommand comando = new NpgsqlCommand("select login from usuario where email = @email", conexao);
+
+                conexao.Open();
+                comando.Parameters.Add("@email", NpgsqlDbType.Varchar).Value = email.Email;                
+
+                try
+                {
+                    var countEmail = comando.ExecuteScalar();
+                    return countEmail == null ? true : false;
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("Login já cadastrado " + e);
+                    throw;
+                }
+                finally
+                {
+                    conexao.Close();
+                }
+            }
+        }
+
+
+
         public static int RecuperarQuantidade()
         {
             var ret = 0;
@@ -157,6 +187,7 @@ namespace ControleUser.web.Models
                             Nome = (string)reader["nome"],
                             Email = (string)reader["email"],
                             Login = (string)reader["login"],
+                            Cargo = (string)reader["cargo"],
                             IdPerfil = (int)reader["id_perfil"],
                             Ativo = (bool)reader["ativo"]
                         });
@@ -179,7 +210,6 @@ namespace ControleUser.web.Models
                 {
                     comando.Connection = conexao;
                     comando.CommandText = "select * from usuario where (id =@id)";
-
                     comando.Parameters.Add("@id", NpgsqlDbType.Integer).Value = id;
                     var reader = comando.ExecuteReader();
 
@@ -191,6 +221,7 @@ namespace ControleUser.web.Models
                             Nome = (string)reader["nome"],
                             Email = (string)reader["email"],
                             Login = (string)reader["login"],
+                            Cargo = (string)reader["cargo"],
                             IdPerfil = (int)reader["id_perfil"],
                             Ativo = (bool)reader["ativo"]
                         };
@@ -239,7 +270,7 @@ namespace ControleUser.web.Models
             using (var conexao = new NpgsqlConnection())
             {
                 conexao.ConnectionString = ConfigurationManager.ConnectionStrings["principal"].ConnectionString;
-                var queryResult = $@"insert into usuario (nome, email, login, senha, id_perfil, ativo) values (@nome, @email, @login, @senha, @id_Perfil, @ativo)";
+                var queryResult = $@"insert into usuario (nome, email, login, cargo, senha, id_perfil, ativo) values (@nome, @email, @login, @cargo, @senha, @id_Perfil, @ativo)";
                 using (var comando = new NpgsqlCommand(queryResult, conexao))
                 {
                     conexao.Open();
@@ -247,6 +278,7 @@ namespace ControleUser.web.Models
                     comando.Parameters.AddWithValue("Nome", NpgsqlTypes.NpgsqlDbType.Varchar, this.Nome);
                     comando.Parameters.AddWithValue("Email", NpgsqlTypes.NpgsqlDbType.Varchar, this.Email);
                     comando.Parameters.AddWithValue("Login", NpgsqlTypes.NpgsqlDbType.Varchar, this.Login);
+                    comando.Parameters.AddWithValue("Cargo", NpgsqlTypes.NpgsqlDbType.Varchar, this.Cargo);
                     comando.Parameters.AddWithValue("Senha", NpgsqlTypes.NpgsqlDbType.Varchar, CriptoHelper.HashMD5(this.Senha));
                     comando.Parameters.AddWithValue("Id_perfil", NpgsqlTypes.NpgsqlDbType.Integer, this.IdPerfil);
                     comando.Parameters.AddWithValue("Ativo", NpgsqlTypes.NpgsqlDbType.Boolean, this.Ativo);
@@ -286,9 +318,10 @@ namespace ControleUser.web.Models
                                             nome = @nome,
                                             email = @email,
                                             login = @login, 
-                                            id_perfil=@id_perfil,
+                                            cargo = @cargo,                                             
                                             senha = @senha,
-                                            ativo = @ativo
+                                            ativo = @ativo,
+                                            id_perfil=@id_perfil
                                     where 
                                             id = @id";
 
@@ -299,6 +332,7 @@ namespace ControleUser.web.Models
                 comando.Parameters.AddWithValue("nome", NpgsqlTypes.NpgsqlDbType.Varchar, model.Nome);
                 comando.Parameters.AddWithValue("email", NpgsqlTypes.NpgsqlDbType.Varchar, model.Email);
                 comando.Parameters.AddWithValue("login", NpgsqlTypes.NpgsqlDbType.Varchar, model.Login);
+                comando.Parameters.AddWithValue("cargo", NpgsqlTypes.NpgsqlDbType.Varchar, model.Cargo);
                 comando.Parameters.AddWithValue("senha", NpgsqlTypes.NpgsqlDbType.Varchar, CriptoHelper.HashMD5(model.Senha));
                 comando.Parameters.AddWithValue("id", NpgsqlTypes.NpgsqlDbType.Integer, model.Id);
                 comando.Parameters.AddWithValue("id_perfil", NpgsqlTypes.NpgsqlDbType.Integer, model.IdPerfil);
@@ -322,8 +356,9 @@ namespace ControleUser.web.Models
         {
             string queryResult = $@"update usuario set 
                                             nome=@nome,
-                                            email=@email
+                                            email=@email,                                            
                                             login=@login,
+                                            cargo=@cargo,
                                             id_perfil=@id_perfil,
                                             ativo=@ativo
 
@@ -337,6 +372,7 @@ namespace ControleUser.web.Models
                 comando.Parameters.AddWithValue("nome", NpgsqlTypes.NpgsqlDbType.Varchar, model.Nome);
                 comando.Parameters.AddWithValue("email", NpgsqlTypes.NpgsqlDbType.Varchar, model.Email);
                 comando.Parameters.AddWithValue("login", NpgsqlTypes.NpgsqlDbType.Varchar, model.Login);
+                comando.Parameters.AddWithValue("cargo", NpgsqlTypes.NpgsqlDbType.Varchar, model.Cargo);
                 comando.Parameters.AddWithValue("id", NpgsqlTypes.NpgsqlDbType.Integer, model.Id);
                 comando.Parameters.AddWithValue("id_perfil", NpgsqlTypes.NpgsqlDbType.Integer, model.IdPerfil);
                 comando.Parameters.AddWithValue("ativo", NpgsqlTypes.NpgsqlDbType.Boolean, model.Ativo);

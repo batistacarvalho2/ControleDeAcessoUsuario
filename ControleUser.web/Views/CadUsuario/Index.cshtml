@@ -12,6 +12,7 @@
     <th>Nome</th>
     <th>Email</th>
     <th>Login</th>
+    <th>Cargo</th>
     <th>Ativo</th>
     <th>Ação</th>
 }
@@ -29,6 +30,7 @@
                     <td>@item.Nome</td>
                     <td>@item.Email</td>
                     <td>@item.Login</td>
+                    <td>@item.Cargo</td>
                     <td>@ativo</td>
                     <td>
                         <a class="btn btn-primary btn-alterar" role="button"><i class="glyphicon glyphicon-pencil"></i> Alterar</a>
@@ -66,13 +68,20 @@
             </div>
         </div>
         <div class="form-group">
+            @Html.Label("txt_cargo", "Cargo", new { @class = "col-md-3 control-label" })
+            <div class="col-md-6">
+                @Html.TextBox("txt_cargo", null, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
             @Html.Label("txt_senha", "Senha", new { @class = "col-md-3 control-label" })
             <div class="col-md-6">
                 @Html.TextBox("txt_senha", null, new { @class = "form-control", type = "password" })
             </div>
         </div>
+        <!--mudar para o menu de papeis-->
         <div class="form-group">
-            @Html.Label("txt_perfil", "Cargo", new { @class = "col-md-3 control-label" })
+            @Html.Label("txt_perfil", "Perfil de Acesso", new { @class = "col-md-3 control-label" })
             <div class="col-md-6">
                 @Html.DropDownList("ddl_perfil", new SelectList(ViewBag.ListaPerfil, "Id", "Nome"), new { @class = "col-md-6 control-label" })
             </div>

@@ -6,7 +6,7 @@ using System.Web.Mvc;
 
 namespace ControleUser.web.Controllers
 {
-    [Authorize(Roles = "Gerente")]
+    [Authorize(Roles = "Administrador, Gerente")]
     public class CadUsuarioController : Controller
     {
         private const int _quantMaxLinhasPorPagina = 10;
@@ -53,11 +53,13 @@ namespace ControleUser.web.Controllers
         [HttpPost]
         public ActionResult SalvarUsuario(UsuarioModel model)
         {
+            var resultado = "OK";
             var mensagens = new List<string>();
             var idSalvo = string.Empty;
 
             if (!ModelState.IsValid)
             {
+                resultado = "AVISO";
                 mensagens = ModelState.Values.SelectMany(x => x.Errors).Select(x => x.ErrorMessage).ToList();
             }
             else
@@ -67,30 +69,33 @@ namespace ControleUser.web.Controllers
                     if (model.Senha == _senhaPadrao)
                     {
                         model.Senha = "";
-
                     }
-                    if (model.ValidaUsuarioEmail(model))
+                    if (model.ValidaLogin(model))
                     {
-                        // Validacao de Email
-                        // SE passar
-                        if (!model.Salvar(model))
+                        if (model.ValidaEmail(model))
                         {
-                            return Json(new { StatusCode = 400, Data = model, ErrorMessage = "Erro ao cadastrar/atualizar os dados do Usuário"});
-                        }
-                            
-                        // Se nao, lança o erro
+                            if (!model.Salvar(model))
+                            {
+                                // return Json(new { StatusCode = 400, Data = model, ErrorMessage = "Erro ao cadastrar/atualizar os dados do Usuário" });
+                                return Json(new { StatusCode = 400, Data = model, ErrorMessage = "Erro ao cadastrar/atualizar os dados do Usuário" });
 
+                            }
+                        }
                     }
                     else
-                        return Json(new { StatusCode = 400, Data = model, ErrorMessage = "Usuário/Email já cadastrado!" });
+                    {
+                        //return Json(new { StatusCode = 400, Data = model, ErrorMessage = "Usuário/Email já cadastrado!" });
+                        resultado = "Usuário/Email já cadastrado!";
+                       
+                    }
                 }
                 catch (Exception)
                 {
                     throw;
                 }
             }
-
-            return Json(new { StatusCode = 200, Data = model });
+            // return Json(new { StatusCode = 200, Data = model });
+            return Json(new { Resultado = resultado, Mensagens = mensagens, IdSalvo = idSalvo });
         }
     }
 }
