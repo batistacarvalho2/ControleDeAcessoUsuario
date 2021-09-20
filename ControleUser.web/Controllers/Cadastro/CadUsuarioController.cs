@@ -15,6 +15,7 @@ namespace ControleUser.web.Controllers
         public ActionResult Index()
         {
             ViewBag.ListaPerfil = PerfilModel.RecuperarListaAtivos();
+            ViewBag.ListaCargo = CargoModel.RecuperarListaCargo();
             ViewBag.SenhaPadrao = _senhaPadrao;
             ViewBag.QuantMaxLinhasPorPagina = _quantMaxLinhasPorPagina;
             ViewBag.PaginaAtual = 1;

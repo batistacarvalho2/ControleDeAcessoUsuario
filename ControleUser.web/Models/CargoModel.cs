@@ -7,14 +7,13 @@ using System.Configuration;
 
 namespace ControleUser.web.Models
 {
-    public class PerfilModel
+    public class CargoModel
     {
             public int Id { get; set; }
 
-            [Required(ErrorMessage = "Preencha o nome.")]
-            public string Nome { get; set; }
+            [Required(ErrorMessage = "Preencha o Cargo.")]
+            public string Cargo { get; set; }
 
-            public bool Ativo { get; set; }
 
             public static int RecuperarQuantidade()
             {
@@ -28,7 +27,7 @@ namespace ControleUser.web.Models
                     using (var comando = new NpgsqlCommand())
                     {
                         comando.Connection = conexao;
-                        comando.CommandText = "SELECT COUNT(*) FROM perfil";
+                        comando.CommandText = "SELECT COUNT(*) FROM cargo_funcao";
                         ret = Convert.ToInt32(comando.ExecuteScalar());
 
                     }
@@ -36,9 +35,9 @@ namespace ControleUser.web.Models
                 return ret;
             }
 
-            public static List<PerfilModel> RecuperarLista(int pagina, int tamPagina)
+            public static List<CargoModel> RecuperarLista(int pagina, int tamPagina)
             {
-                var ret = new List<PerfilModel>();
+                var ret = new List<CargoModel>();
 
                 using (var conexao = new NpgsqlConnection())
                 {
@@ -50,16 +49,15 @@ namespace ControleUser.web.Models
                         var pos = (pagina - 1) * tamPagina;
 
                         comando.Connection = conexao;
-                        comando.CommandText = string.Format("SELECT * FROM perfil ORDER BY nome OFFSET {0} ROWS FETCH NEXT {1} ROWS ONLY", pos > 0 ? pos - 1 : 0, tamPagina);
+                        comando.CommandText = string.Format("SELECT * FROM cargo_funcao ORDER BY cargo OFFSET {0} ROWS FETCH NEXT {1} ROWS ONLY", pos > 0 ? pos - 1 : 0, tamPagina);
                         var reader = comando.ExecuteReader();
 
                         while (reader.Read())
                         {
-                            ret.Add(new Models.PerfilModel
+                            ret.Add(new Models.CargoModel
                             {
                                 Id = (int)reader["id"],
-                                Nome = (string)reader["nome"],
-                                Ativo = (bool)reader["ativo"],
+                                Cargo= (string)reader["cargo"],                                
                             });
                         }
                     }
@@ -67,9 +65,9 @@ namespace ControleUser.web.Models
                 return ret;
             }
 
-        public static List<PerfilModel> RecuperarListaAtivos()
+        public static List<CargoModel> RecuperarListaCargo()
         {
-            var ret = new List<PerfilModel>();
+            var ret = new List<CargoModel>();
 
             using (var conexao = new NpgsqlConnection())
             {
@@ -79,16 +77,15 @@ namespace ControleUser.web.Models
                 using (var comando = new NpgsqlCommand())
                 {
                     comando.Connection = conexao;
-                    comando.CommandText = string.Format("SELECT * FROM perfil where ativo='1' order by nome");
+                    comando.CommandText = string.Format("SELECT * FROM cargo_funcao  order by cargo");
                     var reader = comando.ExecuteReader();
 
                     while (reader.Read())
                     {
-                        ret.Add(new Models.PerfilModel
+                        ret.Add(new Models.CargoModel
                         {
                             Id = (int)reader["id"],
-                            Nome = (string)reader["nome"],                             
-                            Ativo = (bool)reader["ativo"],
+                            Cargo= (string)reader["cargo"],                            
                         });
                     }
                 }
@@ -96,10 +93,9 @@ namespace ControleUser.web.Models
             return ret;
         }
 
-
-        public static PerfilModel RecuperarPeloId(int id)
+        public static CargoModel RecuperarPeloId(int id)
             {
-                PerfilModel ret = null;
+                CargoModel ret = null;
 
                 using (var conexao = new NpgsqlConnection())
                 {
@@ -109,18 +105,17 @@ namespace ControleUser.web.Models
                     using (var comando = new NpgsqlCommand())
                     {
                         comando.Connection = conexao;
-                        comando.CommandText = "select * from perfil where (id =@id)";
+                        comando.CommandText = "select * from cargo_funcao where (id =@id)";
 
                         comando.Parameters.Add("@id", NpgsqlDbType.Integer).Value = id;
                         var reader = comando.ExecuteReader();
 
                         if (reader.Read())
                         {
-                            ret = new PerfilModel
+                            ret = new CargoModel
                             {
                                 Id = (int)reader["id"],
-                                Nome = (string)reader["nome"],
-                                Ativo = (bool)reader["ativo"],
+                                Cargo = (string)reader["cargo"],                                
                             };
                         }
                     }
@@ -142,7 +137,7 @@ namespace ControleUser.web.Models
                         using (var comando = new NpgsqlCommand())
                         {
                             comando.Connection = conexao;
-                            comando.CommandText = "delete from perfil where (id = @id)";
+                            comando.CommandText = "delete from cargo_funcao where (id = @id)";
 
                             comando.Parameters.Add("@id", NpgsqlDbType.Integer).Value = id;
 
@@ -174,15 +169,14 @@ namespace ControleUser.web.Models
                 }
             }
 
-        private bool IncluirRegistro(PerfilModel model, NpgsqlConnection conexao)
+        private bool IncluirRegistro(CargoModel model, NpgsqlConnection conexao)
         {
-            var queryResult = $@"insert into perfil (nome, ativo) values (@Nome, @Ativo)";
+            var queryResult = $@"insert into cargo_funcao (cargo) values (@Cargo)";
             using (var comando = new NpgsqlCommand(queryResult, conexao))
             {
                 if (model == null)
                 {
-                    comando.Parameters.AddWithValue("Nome", NpgsqlTypes.NpgsqlDbType.Varchar, this.Nome);
-                    comando.Parameters.AddWithValue("Ativo", NpgsqlTypes.NpgsqlDbType.Boolean, this.Ativo);
+                    comando.Parameters.AddWithValue("Cargo", NpgsqlTypes.NpgsqlDbType.Varchar, this.Cargo);
                     comando.Prepare();
 
                     comando.ExecuteNonQuery();
@@ -193,13 +187,12 @@ namespace ControleUser.web.Models
             return false;
         }
 
-        private bool Update(PerfilModel model, NpgsqlConnection conexao)
+        private bool Update(CargoModel model, NpgsqlConnection conexao)
         {
-            var queryResult = $@"update grupo_produto set nome = @Nome, ativo = @Ativo where id = @Id";
+            var queryResult = $@"update cargo_funcao set cargo = @Cargo where id = @Id";
             using (var comando = new NpgsqlCommand(queryResult, conexao))
             {
-                comando.Parameters.AddWithValue("Nome", NpgsqlTypes.NpgsqlDbType.Varchar, model.Nome);
-                comando.Parameters.AddWithValue("Ativo", NpgsqlTypes.NpgsqlDbType.Boolean, model.Ativo);
+                comando.Parameters.AddWithValue("Cargo", NpgsqlTypes.NpgsqlDbType.Varchar, model.Cargo);
                 comando.Parameters.AddWithValue("Id", NpgsqlTypes.NpgsqlDbType.Integer, model.Id);
                 comando.Prepare();
 

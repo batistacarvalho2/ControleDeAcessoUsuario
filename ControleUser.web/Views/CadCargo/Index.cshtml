@@ -1,0 +1,63 @@
+﻿
+@model List<ControleUser.web.Models.CargoModel>
+@{
+    Layout = "~/Views/Shared/_Cadastro.cshtml";
+    ViewBag.Title = "Cargo";
+}
+
+@section Styles{
+    <link href="~/Content/Cadastro/Cargo.css" rel="stylesheet" />
+}
+
+@section TituloGrid{
+    <th>Cargo</th>
+    <th>Ação</th>
+}
+
+@section LinhaGrid{
+    @{
+        var linha = 0;
+        foreach (var item in Model)
+        {
+            linha++;
+            if (linha < ViewBag.QuantMaxLinhasPorPagina)
+            {
+                <tr data-id="@item.Id">
+                    <td>@item.Cargo</td>
+                    <td>
+                        <a class="btn btn-primary btn-alterar" role="button"><i class="glyphicon glyphicon-pencil"></i> Alterar</a>
+                        <a class="btn btn-danger btn-excluir" role="button"><i class="glyphicon glyphicon-trash"></i> Excluir</a>
+                    </td>
+                </tr>
+            }
+            else
+            {
+                break;
+            }
+        }
+    }
+}
+
+@section CamposCadastro{
+    <div class="row">
+        <div class="form-group">
+            @Html.Label("txt_cargo", "Cargo", new { @class = "col-md-3 control-label" })
+            <div class="col-md-6">
+                @Html.TextBox("txt_cargo", null, new { @class = "form-control" })
+            </div>
+        </div>
+    </div>
+}
+
+@section Scripts{
+    <script>
+            var tituloPagina = '@ViewBag.Title ';
+            var url_excluir = '@Url.Action("ExcluirCargo", "CadCargo")';
+            var url_confirmar = '@Url.Action("SalvarCargo", "CadCargo")';
+            var url_alterar = '@Url.Action("RecuperarCargo", "CadCargo")';
+            var url_page_click = '@Url.Action("CargoPagina", "Cadcargo")';
+    </script>
+    <script src="~/Scripts/Cadastro/Cargo.js"></script>
+}
+
+
