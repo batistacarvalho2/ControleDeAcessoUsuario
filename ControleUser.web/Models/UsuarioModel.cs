@@ -15,7 +15,7 @@ namespace ControleUser.web.Models
 
         [Required(ErrorMessage = "Informe o login")]
         public string Login { get; set; }
-        
+
         [Required(ErrorMessage = "Infome o cargo")]
         public int IdCargo { get; set; }
 
@@ -30,10 +30,11 @@ namespace ControleUser.web.Models
         [RegularExpression(@"(\w+@\w+\.\w+)(\.\w+)?", ErrorMessage = "E-mail em formato inválido.")]
         public string Email { get; set; }
 
-        [Required(ErrorMessage = "Informe o Cargo")]
+        [Required(ErrorMessage = "Informe o Perfil")]
         public int IdPerfil { get; set; }
 
         public bool Ativo { get; set; }
+        public bool Administrador { get; set; }
 
 
 
@@ -41,6 +42,7 @@ namespace ControleUser.web.Models
         public static UsuarioModel ValidarUsuario(string login, string senha)
         {
             UsuarioModel ret = null;
+
 
             using (var conexao = new NpgsqlConnection())
             {
@@ -63,14 +65,14 @@ namespace ControleUser.web.Models
                         ret = new UsuarioModel
                         {
                             Id = (int)reader["id"],
-                            Login = (string)reader["login"],                            
+                            Login = (string)reader["login"],
                             Senha = (string)reader["senha"],
                             Nome = (string)reader["nome"],
                             Email = (string)reader["email"],
                             IdCargo = (int)reader["id_cargo"],
                             IdPerfil = (int)reader["id_perfil"],
+                            Administrador = (bool)reader["administrador"],
                             Ativo = (bool)reader["ativo"]
-
                         };
                     }
                 }
@@ -94,7 +96,7 @@ namespace ControleUser.web.Models
 
                 conexao.Open();
                 comando.Parameters.Add("@login", NpgsqlDbType.Varchar).Value = login.Login;
-                
+
                 try
                 {
                     var countLogin = comando.ExecuteScalar();
@@ -121,7 +123,7 @@ namespace ControleUser.web.Models
                 NpgsqlCommand comando = new NpgsqlCommand("select login from usuario where email = @email", conexao);
 
                 conexao.Open();
-                comando.Parameters.Add("@email", NpgsqlDbType.Varchar).Value = email.Email;                
+                comando.Parameters.Add("@email", NpgsqlDbType.Varchar).Value = email.Email;
 
                 try
                 {
@@ -166,6 +168,7 @@ namespace ControleUser.web.Models
         {
             var ret = new List<UsuarioModel>();
 
+
             using (var conexao = new NpgsqlConnection())
             {
                 conexao.ConnectionString = ConfigurationManager.ConnectionStrings["principal"].ConnectionString;
@@ -177,8 +180,16 @@ namespace ControleUser.web.Models
 
                     comando.Connection = conexao;
                     comando.CommandText = string.Format("SELECT * FROM usuario ORDER BY nome OFFSET {0} ROWS FETCH NEXT {1} ROWS ONLY", pos > 0 ? pos - 1 : 0, tamPagina);
-                    var reader = comando.ExecuteReader();
 
+
+                    /*         comando.CommandText = string.Format("SELECT * FROM public.usuario" +
+                                 " inner join public.cargo_funcao " +
+                                 "on public.usuario.id_cargo =public.cargo_funcao.id" +
+                                 "ORDER BY nome OFFSET {0} ROWS FETCH NEXT {1} ROWS ONLY", pos > 0 ? pos - 1 : 0, tamPagina);
+
+                    */
+
+                    var reader = comando.ExecuteReader();
                     while (reader.Read())
                     {
                         ret.Add(new Models.UsuarioModel
@@ -189,6 +200,7 @@ namespace ControleUser.web.Models
                             Login = (string)reader["login"],
                             IdCargo = (int)reader["id_cargo"],
                             IdPerfil = (int)reader["id_perfil"],
+                            Administrador = (bool)reader["administrador"],
                             Ativo = (bool)reader["ativo"]
                         });
                     }
@@ -223,6 +235,7 @@ namespace ControleUser.web.Models
                             Login = (string)reader["login"],
                             IdCargo = (int)reader["id_cargo"],
                             IdPerfil = (int)reader["id_perfil"],
+                            Administrador = (bool)reader["administrador"],
                             Ativo = (bool)reader["ativo"]
                         };
                     }
@@ -264,13 +277,22 @@ namespace ControleUser.web.Models
                 return AtualizaUsuario(model);
         }
 
+        public int ValidaAdmin(bool admin)
+        {
+            if (admin == true)
+                return 2;
+            else
+                return 3;
+        }
+
 
         private bool SalvarUsuario()
         {
+            IdPerfil = ValidaAdmin(this.Administrador);
             using (var conexao = new NpgsqlConnection())
             {
                 conexao.ConnectionString = ConfigurationManager.ConnectionStrings["principal"].ConnectionString;
-                var queryResult = $@"insert into usuario (nome, email, login, id_cargo, senha, id_perfil, ativo) values (@nome, @email, @login, @id_cargo, @senha, @id_Perfil, @ativo)";
+                var queryResult = $@"insert into usuario (nome, email, login, id_cargo, senha, id_perfil, administrador, ativo) values (@nome, @email, @login, @id_cargo, @senha, @id_Perfil, @administrador, @ativo)";
                 using (var comando = new NpgsqlCommand(queryResult, conexao))
                 {
                     conexao.Open();
@@ -281,6 +303,7 @@ namespace ControleUser.web.Models
                     comando.Parameters.AddWithValue("Id_Cargo", NpgsqlTypes.NpgsqlDbType.Integer, this.IdCargo);
                     comando.Parameters.AddWithValue("Senha", NpgsqlTypes.NpgsqlDbType.Varchar, CriptoHelper.HashMD5(this.Senha));
                     comando.Parameters.AddWithValue("Id_perfil", NpgsqlTypes.NpgsqlDbType.Integer, this.IdPerfil);
+                    comando.Parameters.AddWithValue("Administrador", NpgsqlTypes.NpgsqlDbType.Boolean, this.Administrador);
                     comando.Parameters.AddWithValue("Ativo", NpgsqlTypes.NpgsqlDbType.Boolean, this.Ativo);
 
                     comando.Prepare();
@@ -314,12 +337,14 @@ namespace ControleUser.web.Models
 
         private bool AtualizaComSenha(UsuarioModel model, NpgsqlConnection conexao)
         {
+            IdPerfil = ValidaAdmin(this.Administrador);
             string queryResult = $@"update usuario set 
                                             nome = @nome,
                                             email = @email,
                                             login = @login, 
                                             id_cargo = @id_cargo,                                             
                                             senha = @senha,
+                                            administrador = @administrador,
                                             ativo = @ativo,
                                             id_perfil=@id_perfil
                                     where 
@@ -336,6 +361,7 @@ namespace ControleUser.web.Models
                 comando.Parameters.AddWithValue("senha", NpgsqlTypes.NpgsqlDbType.Varchar, CriptoHelper.HashMD5(model.Senha));
                 comando.Parameters.AddWithValue("id", NpgsqlTypes.NpgsqlDbType.Integer, model.Id);
                 comando.Parameters.AddWithValue("id_perfil", NpgsqlTypes.NpgsqlDbType.Integer, model.IdPerfil);
+                comando.Parameters.AddWithValue("administrador", NpgsqlTypes.NpgsqlDbType.Boolean, model.Administrador);
                 comando.Parameters.AddWithValue("ativo", NpgsqlTypes.NpgsqlDbType.Boolean, model.Ativo);
 
                 comando.Prepare();
@@ -354,12 +380,14 @@ namespace ControleUser.web.Models
 
         private bool AtualizaSemSenha(UsuarioModel model, NpgsqlConnection conexao)
         {
+            IdPerfil = ValidaAdmin(this.Administrador);
             string queryResult = $@"update usuario set 
                                             nome=@nome,
                                             email=@email,                                            
                                             login=@login,
                                             id_cargo=@id_cargo,
                                             id_perfil=@id_perfil,
+                                            administrador = @administrador,
                                             ativo=@ativo
 
                                     where 
@@ -375,6 +403,7 @@ namespace ControleUser.web.Models
                 comando.Parameters.AddWithValue("id_cargo", NpgsqlTypes.NpgsqlDbType.Integer, model.IdCargo);
                 comando.Parameters.AddWithValue("id", NpgsqlTypes.NpgsqlDbType.Integer, model.Id);
                 comando.Parameters.AddWithValue("id_perfil", NpgsqlTypes.NpgsqlDbType.Integer, model.IdPerfil);
+                comando.Parameters.AddWithValue("administrador", NpgsqlTypes.NpgsqlDbType.Boolean, model.Administrador);
                 comando.Parameters.AddWithValue("ativo", NpgsqlTypes.NpgsqlDbType.Boolean, model.Ativo);
 
                 comando.Prepare();

@@ -87,7 +87,7 @@ namespace ControleUser.web.Controllers
                     {
                         //return Json(new { StatusCode = 400, Data = model, ErrorMessage = "Usuário/Email já cadastrado!" });
                         resultado = "Usuário/Email já cadastrado!";
-                       
+
                     }
                 }
                 catch (Exception)

@@ -12,6 +12,8 @@
     <th>Nome</th>
     <th>Email</th>
     <th>Login</th>
+    <th>Cargo</th>
+    <th>Administrador</th>
     <th>Ativo</th>
     <th>Ação</th>
 }
@@ -25,10 +27,13 @@
             if (linha < ViewBag.QuantMaxLinhasPorPagina)
             {
                 var ativo = (item.Ativo ? "SIM" : "NÃO");
+                var admin = (item.Administrador ? "SIM" : "NÃO");
                 <tr data-id="@item.Id">
                     <td>@item.Nome</td>
                     <td>@item.Email</td>
                     <td>@item.Login</td>
+                    <td>@item.IdCargo</td>
+                    <td>@admin</td>
                     <td>@ativo</td>
                     <td>
                         <a class="btn btn-primary btn-alterar" role="button"><i class="glyphicon glyphicon-pencil"></i> Alterar</a>
@@ -78,10 +83,11 @@
             </div>
         </div>
         <!--mudar para o menu de papeis-->
+
         <div class="form-group">
-            @Html.Label("txt_perfil", "Perfil de Acesso", new { @class = "col-md-3 control-label" })
-            <div class="col-md-6">
-                @Html.DropDownList("ddl_perfil", new SelectList(ViewBag.ListaPerfil, "Id", "Nome"), new { @class = "col-md-6 control-label" })
+            @Html.Label("cbx_admin", "Administrador", new { @class = "col-md-3 control-label" })
+            <div class="col-md-9">
+                @Html.CheckBox("cbx_admin")
             </div>
         </div>
         <div class="form-group">
@@ -103,5 +109,6 @@
 
     </script>
     <script src="~/Scripts/Cadastro/Usuario.js"></script>
+   
 }
 

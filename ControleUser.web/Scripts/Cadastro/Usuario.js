@@ -5,7 +5,7 @@
     $('#txt_login').val(dados.Login);
     $('#ddl_cargo').val(dados.IdCargo);
     $('#txt_senha').val(dados.Senha);
-    $('#ddl_perfil').val(dados.IdPerfil);
+    $('#cbx_admin').prop('checked', dados.Administrador);
     $('#cbx_ativo').prop('checked', dados.Ativo);
 }
 
@@ -18,6 +18,8 @@ function set_dados_grid(dados) {
         '<td>' + dados.Nome + '</td>' +
         '<td>' + dados.Email + '</td>' +
         '<td>' + dados.Login + '</td>' +
+        '<td>' + dados.IdCargo + '</td>' +
+        '<td>' + (dados.Administrador ? 'NÃO' : 'SIM') + '</td>' +
         '<td>' + (dados.Ativo ? 'SIM' : 'NÃO') + '</td>';
 }
 
@@ -27,9 +29,9 @@ function get_dados_inclusao() {
         Nome: '',
         Email: '',
         Login: '',
-        IdCargo: 0,
+        idCargo: 0,
         Senha: '',
-        IdPerfil: 0,
+        Administrador: false,
         Ativo: true
     };
 }
@@ -42,7 +44,7 @@ function get_dados_form() {
         Login: $('#txt_login').val(),
         IdCargo: $('#ddl_cargo').val(),
         Senha: $('#txt_senha').val(),
-        IdPerfil: $('#ddl_perfil').val(),
+        Administrador: $('#cbx_admin').prop('checked'),
         Ativo: $('#cbx_ativo').prop('checked')
     };
 }
@@ -52,7 +54,9 @@ function preencher_linha_grid(param, linha) {
         .eq(0).html(param.Nome).end()
         .eq(1).html(param.Email).end()
         .eq(2).html(param.Login).end()
-        .eq(3).html(param.Ativo ? 'SIM' : 'NÃO');
+        .eq(3).html(param.IdCargo).end()
+        .eq(4).html(param.Administrador ? 'SIM' : 'NÃO')
+        .eq(5).html(param.Ativo ? 'SIM' : 'NÃO');
 }
 
 
