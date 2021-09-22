@@ -10,14 +10,10 @@ namespace ControleUser.web.Controllers
     {
         // GET: Grafico
         [Authorize]
-        public ActionResult PerdaMes()
+        public ActionResult Grafico()
         {
             return View();
         }
-        [Authorize]
-        public ActionResult EntradaSaidaMesa()
-        {
-            return View();
-        }
+
     }
 }

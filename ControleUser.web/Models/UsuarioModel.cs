@@ -12,6 +12,8 @@ namespace ControleUser.web.Models
     public class UsuarioModel
     {
         public int Id { get; set; }
+        [Required(ErrorMessage = "Informe o nome")]
+        public string Nome { get; set; }
 
         [Required(ErrorMessage = "Informe o login")]
         public string Login { get; set; }
@@ -20,24 +22,16 @@ namespace ControleUser.web.Models
         public int IdCargo { get; set; }
 
         [Required(ErrorMessage = "Informe o senha")]
-        public string Senha { get; set; }
-
-        [Required(ErrorMessage = "Informe o nome")]
-        public string Nome { get; set; }
+        public string Senha { get; set; }       
 
         [Required(ErrorMessage = "Informe o E-mail")]
         [EmailAddress(ErrorMessage = "E-mail em formato inválido.")]
         [RegularExpression(@"(\w+@\w+\.\w+)(\.\w+)?", ErrorMessage = "E-mail em formato inválido.")]
         public string Email { get; set; }
-
-        [Required(ErrorMessage = "Informe o Perfil")]
-        public int IdPerfil { get; set; }
-
+        public int IdPerfil { get; set; }        
+        public string NomeCargo { get; set; }
         public bool Ativo { get; set; }
         public bool Administrador { get; set; }
-
-
-
 
         public static UsuarioModel ValidarUsuario(string login, string senha)
         {
@@ -86,61 +80,7 @@ namespace ControleUser.web.Models
             return ret;
         }
 
-        public bool ValidaLogin(UsuarioModel login)
-        {
 
-            using (var conexao = new NpgsqlConnection())
-            {
-                conexao.ConnectionString = ConfigurationManager.ConnectionStrings["principal"].ConnectionString;
-                NpgsqlCommand comando = new NpgsqlCommand("select login from usuario where login = @login", conexao);
-
-                conexao.Open();
-                comando.Parameters.Add("@login", NpgsqlDbType.Varchar).Value = login.Login;
-
-                try
-                {
-                    var countLogin = comando.ExecuteScalar();
-                    return countLogin == null ? true : false;
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine("Login já cadastrado " + e);
-                    throw;
-                }
-                finally
-                {
-                    conexao.Close();
-                }
-            }
-        }
-
-        public bool ValidaEmail(UsuarioModel email)
-        {
-
-            using (var conexao = new NpgsqlConnection())
-            {
-                conexao.ConnectionString = ConfigurationManager.ConnectionStrings["principal"].ConnectionString;
-                NpgsqlCommand comando = new NpgsqlCommand("select login from usuario where email = @email", conexao);
-
-                conexao.Open();
-                comando.Parameters.Add("@email", NpgsqlDbType.Varchar).Value = email.Email;
-
-                try
-                {
-                    var countEmail = comando.ExecuteScalar();
-                    return countEmail == null ? true : false;
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine("Login já cadastrado " + e);
-                    throw;
-                }
-                finally
-                {
-                    conexao.Close();
-                }
-            }
-        }
 
 
 
@@ -179,15 +119,14 @@ namespace ControleUser.web.Models
                     var pos = (pagina - 1) * tamPagina;
 
                     comando.Connection = conexao;
-                    comando.CommandText = string.Format("SELECT * FROM usuario ORDER BY nome OFFSET {0} ROWS FETCH NEXT {1} ROWS ONLY", pos > 0 ? pos - 1 : 0, tamPagina);
+                    //comando.CommandText = string.Format("SELECT * FROM usuario ORDER BY nome OFFSET {0} ROWS FETCH NEXT {1} ROWS ONLY", pos > 0 ? pos - 1 : 0, tamPagina);
 
 
-                    /*         comando.CommandText = string.Format("SELECT * FROM public.usuario" +
-                                 " inner join public.cargo_funcao " +
-                                 "on public.usuario.id_cargo =public.cargo_funcao.id" +
-                                 "ORDER BY nome OFFSET {0} ROWS FETCH NEXT {1} ROWS ONLY", pos > 0 ? pos - 1 : 0, tamPagina);
+                    comando.CommandText = string.Format(@"SELECT * FROM usuario
+                        inner join cargo_funcao on usuario.id_cargo = cargo_funcao.id 
+                        ORDER BY usuario.nome OFFSET {0} ROWS FETCH NEXT {1} ROWS ONLY", pos > 0 ? pos - 1 : 0, tamPagina);
 
-                    */
+
 
                     var reader = comando.ExecuteReader();
                     while (reader.Read())
@@ -201,7 +140,8 @@ namespace ControleUser.web.Models
                             IdCargo = (int)reader["id_cargo"],
                             IdPerfil = (int)reader["id_perfil"],
                             Administrador = (bool)reader["administrador"],
-                            Ativo = (bool)reader["ativo"]
+                            Ativo = (bool)reader["ativo"],
+                            NomeCargo = (string)reader["Cargo"]
                         });
                     }
                 }
@@ -269,6 +209,62 @@ namespace ControleUser.web.Models
             return ret;
         }
 
+        public bool ValidaLogin(UsuarioModel login)
+        {
+
+            using (var conexao = new NpgsqlConnection())
+            {
+                conexao.ConnectionString = ConfigurationManager.ConnectionStrings["principal"].ConnectionString;
+                NpgsqlCommand comando = new NpgsqlCommand("select login from usuario where login = @login", conexao);
+
+                conexao.Open();
+                comando.Parameters.Add("@login", NpgsqlDbType.Varchar).Value = login.Login;
+
+                try
+                {
+                    var countLogin = comando.ExecuteScalar();
+                    return countLogin == null ? true : false;
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("Login já cadastrado " + e);
+                    throw;
+                }
+                finally
+                {
+                    conexao.Close();
+                }
+            }
+        }
+
+        public bool ValidaEmail(UsuarioModel email)
+        {
+            // var id = RecuperarPeloId();
+            using (var conexao = new NpgsqlConnection())
+            {
+                conexao.ConnectionString = ConfigurationManager.ConnectionStrings["principal"].ConnectionString;
+                NpgsqlCommand comando = new NpgsqlCommand("select login from usuario where email = @email", conexao);
+
+                conexao.Open();
+                comando.Parameters.Add("@email", NpgsqlDbType.Varchar).Value = email.Email;
+
+                try
+                {
+                    var countEmail = comando.ExecuteScalar();
+                    return countEmail == null ? true : false;
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("Login já cadastrado " + e);
+                    throw;
+                }
+                finally
+                {
+                    conexao.Close();
+                }
+            }
+        }
+
         public bool Salvar(UsuarioModel model) //Apenas inclui os dados no banco!
         {
             if (model.Id == 0)
@@ -289,6 +285,7 @@ namespace ControleUser.web.Models
         private bool SalvarUsuario()
         {
             IdPerfil = ValidaAdmin(this.Administrador);
+
             using (var conexao = new NpgsqlConnection())
             {
                 conexao.ConnectionString = ConfigurationManager.ConnectionStrings["principal"].ConnectionString;

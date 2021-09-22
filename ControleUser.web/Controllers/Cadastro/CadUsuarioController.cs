@@ -6,7 +6,7 @@ using System.Web.Mvc;
 
 namespace ControleUser.web.Controllers
 {
-    [Authorize(Roles = "Administrador, Gerente")]
+    [Authorize(Roles = "Administrador")]
     public class CadUsuarioController : Controller
     {
         private const int _quantMaxLinhasPorPagina = 10;
@@ -71,23 +71,17 @@ namespace ControleUser.web.Controllers
                     {
                         model.Senha = "";
                     }
-                    if (model.ValidaLogin(model))
-                    {
-                        if (model.ValidaEmail(model))
-                        {
-                            if (!model.Salvar(model))
-                            {
-                                // return Json(new { StatusCode = 400, Data = model, ErrorMessage = "Erro ao cadastrar/atualizar os dados do Usuário" });
-                                return Json(new { StatusCode = 400, Data = model, ErrorMessage = "Erro ao cadastrar/atualizar os dados do Usuário" });
 
-                            }
+                    if (model.Id == 0)
+                    {
+                        if (!model.ValidaLogin(model) && !model.ValidaEmail(model))
+                        {
+                            return Json(new { StatusCode = 400, Data = model, ErrorMessage = "Usuário/Email já cadastrado!" });
                         }
                     }
-                    else
+                    if (!model.Salvar(model))
                     {
-                        //return Json(new { StatusCode = 400, Data = model, ErrorMessage = "Usuário/Email já cadastrado!" });
-                        resultado = "Usuário/Email já cadastrado!";
-
+                        return Json(new { StatusCode = 400, Data = model, ErrorMessage = "Erro ao cadastrar/atualizar os dados do Usuário" });
                     }
                 }
                 catch (Exception)

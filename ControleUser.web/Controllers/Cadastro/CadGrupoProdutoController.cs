@@ -6,7 +6,8 @@ using System.Web.Mvc;
 
 namespace ControleUser.web.Controllers
 {
-    [Authorize(Roles= "Admistrador,Gerente,Operador")]
+    [Authorize(Roles= "Administrador,Operador")]
+    
     public class CadGrupoProdutoController : Controller
     {
          private const int _quantMaxLinhasPorPagina = 5;
@@ -43,7 +44,7 @@ namespace ControleUser.web.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admistrador,Gerente")]
+        [Authorize(Roles = "Administrador,Operador")]
         public JsonResult ExcluirGrupoProduto(int id)
         {
             return Json(GrupoProdutoModel.ExcluirPeloId(id));
