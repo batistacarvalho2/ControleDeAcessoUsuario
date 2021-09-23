@@ -1,9 +1,9 @@
-﻿#grid_cadastro > thead > tr th:nth-child(2) {
-    width: 110px;
+﻿#grid_cadastro > thead > tr th:nth-child(1) {
+    width: 410px;
 }
 
-#grid_cadastro > thead > tr th:nth-child(3) {
-    width: 200px;
+#grid_cadastro > thead > tr th:nth-child(2) {
+    width: 130px;
 }
 
 #cadastro {

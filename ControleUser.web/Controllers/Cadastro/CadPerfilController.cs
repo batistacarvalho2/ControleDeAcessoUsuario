@@ -6,7 +6,7 @@ using System.Web.Mvc;
 
 namespace ControleUser.web.Controllers.Cadastro
 {
-
+    //Grupos de acessos
     [Authorize(Roles = "Administrador")]
     public class CadPerfilController : Controller
     {
@@ -75,7 +75,7 @@ namespace ControleUser.web.Controllers.Cadastro
                         }
 
                     }
-                    catch (Exception)
+                    catch (Exception e)
                     {
                         resultado = "ERRO";
                     }

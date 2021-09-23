@@ -80,10 +80,6 @@ namespace ControleUser.web.Models
             return ret;
         }
 
-
-
-
-
         public static int RecuperarQuantidade()
         {
             var ret = 0;
@@ -120,12 +116,9 @@ namespace ControleUser.web.Models
 
                     comando.Connection = conexao;
                     //comando.CommandText = string.Format("SELECT * FROM usuario ORDER BY nome OFFSET {0} ROWS FETCH NEXT {1} ROWS ONLY", pos > 0 ? pos - 1 : 0, tamPagina);
-
-
                     comando.CommandText = string.Format(@"SELECT * FROM usuario
                         inner join cargo_funcao on usuario.id_cargo = cargo_funcao.id 
                         ORDER BY usuario.nome OFFSET {0} ROWS FETCH NEXT {1} ROWS ONLY", pos > 0 ? pos - 1 : 0, tamPagina);
-
 
 
                     var reader = comando.ExecuteReader();
@@ -289,7 +282,10 @@ namespace ControleUser.web.Models
             using (var conexao = new NpgsqlConnection())
             {
                 conexao.ConnectionString = ConfigurationManager.ConnectionStrings["principal"].ConnectionString;
-                var queryResult = $@"insert into usuario (nome, email, login, id_cargo, senha, id_perfil, administrador, ativo) values (@nome, @email, @login, @id_cargo, @senha, @id_Perfil, @administrador, @ativo)";
+                var queryResult = $@"insert into usuario
+                                                (nome, email, login, id_cargo, senha, id_perfil, administrador, ativo)
+                                                values
+                                                (@nome, @email, @login, @id_cargo, @senha, @id_Perfil, @administrador, @ativo)";
                 using (var comando = new NpgsqlCommand(queryResult, conexao))
                 {
                     conexao.Open();

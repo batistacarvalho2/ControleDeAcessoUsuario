@@ -2,6 +2,8 @@
 function set_dados_forms(dados) {
     $('#id_cadastro').val(dados.Id);
     $('#txt_nome').val(dados.Nome);
+    $('#txt_usuarioProprietario').val(dados.UsuarioProprietario);
+    $('#txt_dataCriacao').val(dados.DataCriacao);
     $('#cbx_ativo').prop('checked', dados.Ativo);
 }
 
@@ -11,7 +13,9 @@ function set_focus_form() {
 
 function set_dados_grid(dados) {
     return
-    '<td>' + dados.Nome + '</td>' +
+        '<td>' + dados.Nome + '</td>' +
+        '<td>' + dados.UsuarioProprietario + '</td>' +
+        '<td>' + dados.DataCriacao + '</td>' +
         '<td>' + (dados.Ativo ? 'SIM' : 'NÃO') + '</td>';
 }
 
@@ -19,6 +23,8 @@ function get_dados_inclusao() {
     return {
         Id: 0,
         Nome: '',
+        UsuarioProprietario: '',
+        DataCriacao: '',
         Ativo: true
     }
 }
@@ -27,6 +33,8 @@ function get_dados_form() {
     return {
         Id: $('#id_cadastro').val(),
         Nome: $('#txt_nome').val(),
+        UsuarioProprietario: $('#txt_usuarioProprietario').val(),
+        DataCriacao: $('#txt_dataCriacao').val(),
         Ativo: $('#cbx_ativo').prop('checked')
     };
 }
@@ -34,7 +42,9 @@ function get_dados_form() {
 function preencher_linha_grid(param, linha) {
     linha
         .eq(0).html(param.Nome).end()
-        .eq(1).html(param.Ativo ? 'SIM' : 'NÃO');
+        .eq(1).html(param.UsuarioProprietario).end()
+        .eq(2).html(param.DataCriacao).end()
+        .eq(3).html(param.Ativo ? 'SIM' : 'NÃO');
 }
 
 
