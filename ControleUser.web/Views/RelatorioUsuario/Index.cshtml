@@ -1,0 +1,80 @@
+﻿@model List<ControleUser.web.Models.RelatorioUsuarioModel>
+@{
+    Layout = "";
+    ViewBag.Title = "Lista de Usuário";
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    @Styles.Render("~/Content/css")
+    <style>
+        #grid_cadastro > thead > tr th:nth-child(1) {
+            width: 410px;
+        }
+
+        #grid_cadastro > thead > tr th:nth-child(2) {
+            width: 210px;
+        }
+
+        #grid_cadastro > thead > tr th:nth-child(3) {
+            width: 200px;
+        }
+
+        #grid_cadastro > thead > tr th:nth-child(4) {
+            width: 110px;
+        }
+
+        #grid_cadastro > thead > tr th:nth-child(5) {
+            width: 110px;
+        }
+
+        #grid_cadastro > thead > tr th:nth-child(6) {
+            width: 110px;
+        }
+
+        #grid_cadastro > thead > tr th:nth-child(7) {
+            width: 450px;
+        }
+
+        tr {
+            page-break-inside: avoid;
+        }
+    </style>
+</head>
+<body>
+    <div class="col-md-12 text-center">
+        <h3>Lista de Usuário</h3>
+    </div>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Nome</th>
+                <th>Login</th>
+                <th>Email</th>
+                <th>Cargo</th>
+                <th>Administrador</th>
+                <th>Ativo</th>
+            </tr>
+        </thead>
+        @{
+            foreach (var item in Model)
+            {
+                var ativo = (item.Ativo ? "SIM" : "NÃO");
+                var admin = (item.Administrador ? "SIM" : "NÃO");
+                <tr>
+                    <td>@item.Nome</td>
+                    <td>@item.Login</td>
+                    <td>@item.Email</td>
+                    <td>@item.NomeCargo</td>
+                    <td>@admin</td>
+                    <td>@ativo</td>
+                </tr>
+            }
+        }
+        </table>
+    </body>
+</html>
+
+

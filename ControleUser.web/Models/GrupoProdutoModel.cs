@@ -50,7 +50,9 @@ namespace ControleUser.web.Models
                     var pos = (pagina -1) * tamPagina;
 
                     comando.Connection = conexao;
-                    comando.CommandText = string.Format( "SELECT * FROM grupo_produto ORDER BY nome OFFSET {0} ROWS FETCH NEXT {1} ROWS ONLY",pos>0 ? pos-1 : 0, tamPagina);
+                    comando.CommandText = string.Format( @"SELECT * FROM grupo_produto
+                                                                         ORDER BY nome 
+                                                                         OFFSET {0} ROWS FETCH NEXT {1} ROWS ONLY",pos>0 ? pos-1 : 0, tamPagina);
                     var reader = comando.ExecuteReader();
 
                     while (reader.Read())
@@ -132,15 +134,14 @@ namespace ControleUser.web.Models
                 conexao.ConnectionString = ConfigurationManager.ConnectionStrings["principal"].ConnectionString;
                 conexao.Open();
 
-                if (IncluirRegistro(model, conexao) == false)
+                if (model == null)
                 {
-                    return Update(model, conexao) ? 1 : 0;
+                    return IncluirRegistro(model, conexao) ? 1 : 0;
                 }
                 else
                 {
-                    return 1;
+                    return Update(model, conexao) ? 1 : 0;
                 }
-
             }
         }
 
@@ -151,8 +152,8 @@ namespace ControleUser.web.Models
             {
                 if (model == null)
                 {
-                    comando.Parameters.AddWithValue("Nome", NpgsqlTypes.NpgsqlDbType.Varchar, this.Nome);
-                    comando.Parameters.AddWithValue("Ativo", NpgsqlTypes.NpgsqlDbType.Boolean, this.Ativo);
+                    comando.Parameters.AddWithValue("Nome", NpgsqlDbType.Varchar, this.Nome);
+                    comando.Parameters.AddWithValue("Ativo", NpgsqlDbType.Boolean, this.Ativo);
                     comando.Prepare();
 
                     comando.ExecuteNonQuery();
@@ -165,12 +166,18 @@ namespace ControleUser.web.Models
 
         private bool Update(GrupoProdutoModel model, NpgsqlConnection conexao)
         {
-            var queryResult = $@"update grupo_produto set nome = @Nome, ativo = @Ativo where id = @Id";
+            var queryResult = $@"update grupo_produto
+                                        set 
+                                        nome = @Nome, 
+                                        ativo = @Ativo 
+                                        where 
+                                        id = @Id";
+
             using (var comando = new NpgsqlCommand(queryResult, conexao))
             {
-                comando.Parameters.AddWithValue("Nome", NpgsqlTypes.NpgsqlDbType.Varchar, model.Nome);
-                comando.Parameters.AddWithValue("Ativo", NpgsqlTypes.NpgsqlDbType.Boolean, model.Ativo);
-                comando.Parameters.AddWithValue("Id", NpgsqlTypes.NpgsqlDbType.Integer, model.Id);
+                comando.Parameters.AddWithValue("Nome", NpgsqlDbType.Varchar, this.Nome);
+                comando.Parameters.AddWithValue("Ativo", NpgsqlDbType.Boolean, this.Ativo);
+                comando.Parameters.AddWithValue("Id", NpgsqlDbType.Integer, this.Id);
                 comando.Prepare();
 
                 if (comando.ExecuteNonQuery() > 0)

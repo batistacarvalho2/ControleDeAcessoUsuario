@@ -61,6 +61,7 @@
             @Html.Label("txt_login", "Login", new { @class = "col-md-3 control-label" })
             <div class="col-md-6">
                 @Html.TextBox("txt_login", null, new { @class = "form-control" })
+                @Html.ValidationMessage("login", null, new { @class = "text-danger" })
             </div>
         </div>
         <div class="form-group">
@@ -108,6 +109,5 @@
 
     </script>
     <script src="~/Scripts/Cadastro/Usuario.js"></script>
-
 }
 

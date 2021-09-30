@@ -71,14 +71,24 @@ namespace ControleUser.web.Controllers
                     {
                         model.Senha = "";
                     }
-
                     if (model.Id == 0)
                     {
-                        if (!model.ValidaLogin(model) && !model.ValidaEmail(model))
+                        if (!model.ValidaLogin(model))
+                        {
+                            ModelState.AddModelError("Login", "Login já cadastrado!");
+                             return Json(new { Resultado = resultado, Mensagens = mensagens, IdSalvo = idSalvo });
+                           // return Json(new { StatusCode = 400, Data = model, ErrorMessage = "Usuário/Email já cadastrado!" });
+                            //return RedirectToAction("Index", new { login });
+
+                        }
+
+
+                        if (!model.ValidaEmail(model))
                         {
                             return Json(new { StatusCode = 400, Data = model, ErrorMessage = "Usuário/Email já cadastrado!" });
                         }
                     }
+
                     if (!model.Salvar(model))
                     {
                         return Json(new { StatusCode = 400, Data = model, ErrorMessage = "Erro ao cadastrar/atualizar os dados do Usuário" });

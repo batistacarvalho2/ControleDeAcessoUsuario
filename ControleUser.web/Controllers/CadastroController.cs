@@ -10,8 +10,6 @@ namespace ControleUser.web.Controllers
     {
         private const int _quantMaxLinhasPorPagina = 5;
 
-        #region Cadastro de Produtos
-
         [Authorize]
         public ActionResult GrupoProduto()
         {
@@ -88,22 +86,5 @@ namespace ControleUser.web.Controllers
             //objeto anonimo
             return Json(new { Resultado = resultado, Mensagens = mensagens, IdSalvo = idSalvo });
         }
-
-        [Authorize]
-        public ActionResult MarcaProduto()
-        {
-            return View();
-        }
-
-
-        [Authorize]
-        public ActionResult Produto()
-        {
-            return View();
-        }
-
-
-
-        #endregion
     }
 }

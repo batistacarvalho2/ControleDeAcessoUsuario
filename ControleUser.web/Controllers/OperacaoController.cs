@@ -14,20 +14,6 @@ namespace ControleUser.web.Controllers
         {
             return View();
         }
-        [Authorize]
-        public ActionResult SaidaEstoque()
-        {
-            return View();
-        }
-        [Authorize]
-        public ActionResult LanPerdaProduto()
-        {
-            return View();
-        }
-        [Authorize]
-        public ActionResult Inventario()
-        {
-            return View();
-        }
+
     }
 }

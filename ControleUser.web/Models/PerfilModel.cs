@@ -10,16 +10,13 @@ namespace ControleUser.web.Models
     public class PerfilModel
     {
         public int Id { get; set; }
-
         [Required(ErrorMessage = "Preencha o nome.")]
         public string Nome { get; set; }
         [Required(ErrorMessage = "Preencha o Usuario Proprietario.")]
         public string UsuarioProprietario { get; set; }
-
         public DateTime DataCriacao { get; set; }
-
-
         public bool Ativo { get; set; }
+
 
         public static int RecuperarQuantidade()
         {
@@ -182,7 +179,6 @@ namespace ControleUser.web.Models
                 {
                     return Update(model, conexao) ? 1 : 0;
                 }
-
             }
         }
 
@@ -223,9 +219,9 @@ namespace ControleUser.web.Models
             using (var comando = new NpgsqlCommand(queryResult, conexao))
             {
                 comando.Parameters.AddWithValue("nome", NpgsqlDbType.Varchar, model.Nome);
-                comando.Parameters.AddWithValue("usuario_proprietario", NpgsqlTypes.NpgsqlDbType.Varchar, model.UsuarioProprietario);
-                comando.Parameters.AddWithValue("ativo", NpgsqlTypes.NpgsqlDbType.Boolean, model.Ativo);
-                comando.Parameters.AddWithValue("id", NpgsqlTypes.NpgsqlDbType.Integer, model.Id);
+                comando.Parameters.AddWithValue("usuario_proprietario", NpgsqlDbType.Varchar, model.UsuarioProprietario);
+                comando.Parameters.AddWithValue("ativo", NpgsqlDbType.Boolean, model.Ativo);
+                comando.Parameters.AddWithValue("id", NpgsqlDbType.Integer, model.Id);
                 comando.Prepare();
 
                 if (comando.ExecuteNonQuery() > 0)

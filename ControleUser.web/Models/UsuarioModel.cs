@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Configuration;
-using System.Text.RegularExpressions;
+
 
 namespace ControleUser.web.Models
 {
@@ -117,14 +117,14 @@ namespace ControleUser.web.Models
                     comando.Connection = conexao;
                     //comando.CommandText = string.Format("SELECT * FROM usuario ORDER BY nome OFFSET {0} ROWS FETCH NEXT {1} ROWS ONLY", pos > 0 ? pos - 1 : 0, tamPagina);
                     comando.CommandText = string.Format(@"SELECT * FROM usuario
-                        inner join cargo_funcao on usuario.id_cargo = cargo_funcao.id 
-                        ORDER BY usuario.nome OFFSET {0} ROWS FETCH NEXT {1} ROWS ONLY", pos > 0 ? pos - 1 : 0, tamPagina);
+                                                inner join cargo_funcao on usuario.id_cargo = cargo_funcao.id 
+                                                ORDER BY usuario.nome OFFSET {0} ROWS FETCH NEXT {1} ROWS ONLY", pos > 0 ? pos - 1 : 0, tamPagina);
 
 
                     var reader = comando.ExecuteReader();
                     while (reader.Read())
                     {
-                        ret.Add(new Models.UsuarioModel
+                        ret.Add(new UsuarioModel
                         {
                             Id = (int)reader["id"],
                             Nome = (string)reader["nome"],
@@ -204,7 +204,6 @@ namespace ControleUser.web.Models
 
         public bool ValidaLogin(UsuarioModel login)
         {
-
             using (var conexao = new NpgsqlConnection())
             {
                 conexao.ConnectionString = ConfigurationManager.ConnectionStrings["principal"].ConnectionString;
@@ -286,18 +285,19 @@ namespace ControleUser.web.Models
                                                 (nome, email, login, id_cargo, senha, id_perfil, administrador, ativo)
                                                 values
                                                 (@nome, @email, @login, @id_cargo, @senha, @id_Perfil, @administrador, @ativo)";
+
                 using (var comando = new NpgsqlCommand(queryResult, conexao))
                 {
                     conexao.Open();
 
-                    comando.Parameters.AddWithValue("Nome", NpgsqlTypes.NpgsqlDbType.Varchar, this.Nome);
-                    comando.Parameters.AddWithValue("Email", NpgsqlTypes.NpgsqlDbType.Varchar, this.Email);
-                    comando.Parameters.AddWithValue("Login", NpgsqlTypes.NpgsqlDbType.Varchar, this.Login);
-                    comando.Parameters.AddWithValue("Id_Cargo", NpgsqlTypes.NpgsqlDbType.Integer, this.IdCargo);
-                    comando.Parameters.AddWithValue("Senha", NpgsqlTypes.NpgsqlDbType.Varchar, CriptoHelper.HashMD5(this.Senha));
-                    comando.Parameters.AddWithValue("Id_perfil", NpgsqlTypes.NpgsqlDbType.Integer, this.IdPerfil);
-                    comando.Parameters.AddWithValue("Administrador", NpgsqlTypes.NpgsqlDbType.Boolean, this.Administrador);
-                    comando.Parameters.AddWithValue("Ativo", NpgsqlTypes.NpgsqlDbType.Boolean, this.Ativo);
+                    comando.Parameters.AddWithValue("Nome", NpgsqlDbType.Varchar, this.Nome);
+                    comando.Parameters.AddWithValue("Email", NpgsqlDbType.Varchar, this.Email);
+                    comando.Parameters.AddWithValue("Login", NpgsqlDbType.Varchar, this.Login);
+                    comando.Parameters.AddWithValue("Id_Cargo", NpgsqlDbType.Integer, this.IdCargo);
+                    comando.Parameters.AddWithValue("Senha", NpgsqlDbType.Varchar, CriptoHelper.HashMD5(this.Senha));
+                    comando.Parameters.AddWithValue("Id_perfil", NpgsqlDbType.Integer, this.IdPerfil);
+                    comando.Parameters.AddWithValue("Administrador", NpgsqlDbType.Boolean, this.Administrador);
+                    comando.Parameters.AddWithValue("Ativo", NpgsqlDbType.Boolean, this.Ativo);
 
                     comando.Prepare();
 
@@ -347,15 +347,15 @@ namespace ControleUser.web.Models
             {
                 conexao.Open();
 
-                comando.Parameters.AddWithValue("nome", NpgsqlTypes.NpgsqlDbType.Varchar, model.Nome);
-                comando.Parameters.AddWithValue("email", NpgsqlTypes.NpgsqlDbType.Varchar, model.Email);
-                comando.Parameters.AddWithValue("login", NpgsqlTypes.NpgsqlDbType.Varchar, model.Login);
-                comando.Parameters.AddWithValue("id_cargo", NpgsqlTypes.NpgsqlDbType.Integer, model.IdCargo);
-                comando.Parameters.AddWithValue("senha", NpgsqlTypes.NpgsqlDbType.Varchar, CriptoHelper.HashMD5(model.Senha));
-                comando.Parameters.AddWithValue("id", NpgsqlTypes.NpgsqlDbType.Integer, model.Id);
-                comando.Parameters.AddWithValue("id_perfil", NpgsqlTypes.NpgsqlDbType.Integer, model.IdPerfil);
-                comando.Parameters.AddWithValue("administrador", NpgsqlTypes.NpgsqlDbType.Boolean, model.Administrador);
-                comando.Parameters.AddWithValue("ativo", NpgsqlTypes.NpgsqlDbType.Boolean, model.Ativo);
+                comando.Parameters.AddWithValue("nome", NpgsqlDbType.Varchar, this.Nome);
+                comando.Parameters.AddWithValue("email", NpgsqlDbType.Varchar, this.Email);
+                comando.Parameters.AddWithValue("login", NpgsqlDbType.Varchar, this.Login);
+                comando.Parameters.AddWithValue("id_cargo",NpgsqlDbType.Integer, this.IdCargo);
+                comando.Parameters.AddWithValue("senha", NpgsqlDbType.Varchar, CriptoHelper.HashMD5(this.Senha));
+                comando.Parameters.AddWithValue("id", NpgsqlDbType.Integer, this.Id);
+                comando.Parameters.AddWithValue("id_perfil", NpgsqlDbType.Integer, this.IdPerfil);
+                comando.Parameters.AddWithValue("administrador",NpgsqlDbType.Boolean, this.Administrador);
+                comando.Parameters.AddWithValue("ativo", NpgsqlDbType.Boolean, this.Ativo);
 
                 comando.Prepare();
 
@@ -390,14 +390,14 @@ namespace ControleUser.web.Models
             {
                 conexao.Open();
 
-                comando.Parameters.AddWithValue("nome", NpgsqlTypes.NpgsqlDbType.Varchar, model.Nome);
-                comando.Parameters.AddWithValue("email", NpgsqlTypes.NpgsqlDbType.Varchar, model.Email);
-                comando.Parameters.AddWithValue("login", NpgsqlTypes.NpgsqlDbType.Varchar, model.Login);
-                comando.Parameters.AddWithValue("id_cargo", NpgsqlTypes.NpgsqlDbType.Integer, model.IdCargo);
-                comando.Parameters.AddWithValue("id", NpgsqlTypes.NpgsqlDbType.Integer, model.Id);
-                comando.Parameters.AddWithValue("id_perfil", NpgsqlTypes.NpgsqlDbType.Integer, model.IdPerfil);
-                comando.Parameters.AddWithValue("administrador", NpgsqlTypes.NpgsqlDbType.Boolean, model.Administrador);
-                comando.Parameters.AddWithValue("ativo", NpgsqlTypes.NpgsqlDbType.Boolean, model.Ativo);
+                comando.Parameters.AddWithValue("nome", NpgsqlDbType.Varchar, this.Nome);
+                comando.Parameters.AddWithValue("email", NpgsqlDbType.Varchar, this.Email);
+                comando.Parameters.AddWithValue("login", NpgsqlDbType.Varchar, this.Login);
+                comando.Parameters.AddWithValue("id_cargo", NpgsqlDbType.Integer, this.IdCargo);
+                comando.Parameters.AddWithValue("id",NpgsqlDbType.Integer, this.Id);
+                comando.Parameters.AddWithValue("id_perfil", NpgsqlDbType.Integer, this.IdPerfil);
+                comando.Parameters.AddWithValue("administrador",NpgsqlDbType.Boolean, this.Administrador);
+                comando.Parameters.AddWithValue("ativo",NpgsqlDbType.Boolean, this.Ativo);
 
                 comando.Prepare();
 

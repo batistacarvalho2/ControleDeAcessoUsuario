@@ -44,7 +44,7 @@ namespace ControleUser.web.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Administrador,Operador")]
+        [Authorize(Roles = "Administrador")]
         public JsonResult ExcluirGrupoProduto(int id)
         {
             return Json(GrupoProdutoModel.ExcluirPeloId(id));
