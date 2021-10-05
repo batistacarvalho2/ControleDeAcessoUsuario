@@ -32,14 +32,6 @@
     margin: 0 auto;
 }
 
-#cadastro_cabecalho {
-    border-bottom: 1px #dddddd solid;
-}
-
-#cadastro_conteudo {
-    margin-top: 20px;
-}
-
-#cabecalho_grid {
-    margin-bottom: 20px;
+tr {
+    page-break-inside: avoid;
 }
