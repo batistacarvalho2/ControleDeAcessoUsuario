@@ -1,4 +1,5 @@
 ﻿using ControleUser.web.Models;
+using Rotativa;
 using System.Web.Mvc;
 
 namespace ControleUser.web.Controllers
@@ -24,7 +25,7 @@ namespace ControleUser.web.Controllers
             var difQuantPaginas = (quant % ViewBag.QuantMaxLinhasPorPagina) > 0 ? 1 : 0;
             ViewBag.QuantPaginas = (quant / ViewBag.QuantMaxLinhasPorPagina) + difQuantPaginas;
 
-            return View(lista);
+            return new ViewAsPdf("~/Views/RelatorioUsuario/Index.cshtml",lista);
         }
         public ActionResult FiltroRelatorio()
         {
