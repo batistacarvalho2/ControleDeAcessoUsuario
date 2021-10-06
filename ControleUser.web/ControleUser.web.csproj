@@ -199,11 +199,13 @@
     <Compile Include="Controllers\OperacaoController.cs" />
     <Compile Include="Controllers\RelatorioController.cs" />
     <Compile Include="Controllers\Relatorio\RelatorioUsuarioController.cs" />
+    <Compile Include="Controllers\Relatorio\RelatorioGrupoController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Helpers\CriptoHelper.cs" />
     <Compile Include="Models\GrupoProdutoModel.cs" />
+    <Compile Include="Models\RelatorioGrupoModel.cs" />
     <Compile Include="Models\RelatorioUsuarioModel.cs" />
     <Compile Include="Models\LoginViewModel.cs" />
     <Compile Include="Models\CargoModel.cs" />
@@ -223,6 +225,7 @@
     <Content Include="Content\Cadastro\Perfil.css" />
     <Content Include="Content\Cadastro\UnidadeMedida.css" />
     <Content Include="Content\Cadastro\Usuario.css" />
+    <Content Include="Content\Relatorio\ListaGrupo.css" />
     <Content Include="Content\Relatorio\ListaUsuario.css" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
@@ -269,7 +272,7 @@
     <Content Include="Views\CadGrupoProduto\Index.cshtml" />
     <Content Include="Views\Grafico\Grafico.cshtml" />
     <Content Include="Views\RelatorioUsuario\Index.cshtml" />
-    <Content Include="Views\RelatorioGrupoUsuario\ListaGrupoUsuario.cshtml" />
+    <Content Include="Views\RelatorioGrupo\ListaGrupo.cshtml" />
     <Content Include="Views\Operacao\EntradaEstoque.cshtml" />
     <Content Include="Views\Conta\Login.cshtml" />
     <Content Include="Views\Shared\_Cadastro.cshtml" />
