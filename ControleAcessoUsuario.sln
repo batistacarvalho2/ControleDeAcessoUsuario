@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31019.35
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ControleUser.web", "ControleUser.web\ControleUser.web.csproj", "{147DA2EC-8DF9-46D1-A4FD-E6405C13A306}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ControleUser", "ControleUser.web\ControleUser.csproj", "{147DA2EC-8DF9-46D1-A4FD-E6405C13A306}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

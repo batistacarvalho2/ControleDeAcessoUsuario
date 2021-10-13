@@ -9,7 +9,6 @@ namespace ControleUser.web.Controllers
         public ActionResult Index()
         {
             var lista = RelatorioGrupoModel.RecuperarLista();
-            //return new ViewAsPdf("~/Views/RelatorioUsuario/Index.cshtml",lista);
             return View(lista);
         }
     }

@@ -11,7 +11,7 @@ namespace ControleUser.web.Controllers
     public class CadCargoController : Controller
     {
 
-            private const int _quantMaxLinhasPorPagina = 5;
+            private const int _quantMaxLinhasPorPagina = 100;
 
             public ActionResult Index()
             {
