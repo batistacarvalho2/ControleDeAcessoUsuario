@@ -87,7 +87,7 @@ namespace ControleUser.web.Models
             return ret;
         }
 
-        public static List<RelatorioUsuarioModel> RecuperarLista(int pagina, int tamPagina)
+        public static List<RelatorioUsuarioModel> RecuperarLista()
         {
             var ret = new List<RelatorioUsuarioModel>();
 
@@ -99,13 +99,10 @@ namespace ControleUser.web.Models
 
                 using (var comando = new NpgsqlCommand())
                 {
-                    var pos = (pagina - 1) * tamPagina;
-
                     comando.Connection = conexao;
                     //comando.CommandText = string.Format("SELECT * FROM usuario ORDER BY nome OFFSET {0} ROWS FETCH NEXT {1} ROWS ONLY", pos > 0 ? pos - 1 : 0, tamPagina);
                     comando.CommandText = string.Format(@"SELECT * FROM usuario
-                                                inner join cargo_funcao on usuario.id_cargo = cargo_funcao.id 
-                                                ORDER BY usuario.nome OFFSET {0} ROWS FETCH NEXT {1} ROWS ONLY", pos > 0 ? pos - 1 : 0, tamPagina);
+                                                inner join cargo_funcao on usuario.id_cargo = cargo_funcao.id");
 
 
                     var reader = comando.ExecuteReader();

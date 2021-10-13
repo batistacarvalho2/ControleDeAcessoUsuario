@@ -188,22 +188,20 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\CadastroController.cs" />
-    <Compile Include="Controllers\Cadastro\CadGrupoProdutoController.cs" />
     <Compile Include="Controllers\Cadastro\CadCargoController .cs" />
     <Compile Include="Controllers\Cadastro\CadPerfilController.cs" />
-    <Compile Include="Controllers\Cadastro\CadUnidadeMedidaController.cs" />
     <Compile Include="Controllers\Cadastro\CadUsuarioController.cs" />
     <Compile Include="Controllers\ContaController.cs" />
-    <Compile Include="Controllers\GraficoController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
-    <Compile Include="Controllers\OperacaoController.cs" />
     <Compile Include="Controllers\RelatorioController.cs" />
+    <Compile Include="Controllers\Relatorio\RelatorioGrupoController.cs" />
     <Compile Include="Controllers\Relatorio\RelatorioUsuarioController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Helpers\CriptoHelper.cs" />
     <Compile Include="Models\GrupoProdutoModel.cs" />
+    <Compile Include="Models\RelatorioGrupoModel.cs" />
     <Compile Include="Models\RelatorioUsuarioModel.cs" />
     <Compile Include="Models\LoginViewModel.cs" />
     <Compile Include="Models\CargoModel.cs" />
@@ -266,14 +264,11 @@
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\CadUsuario\Index.cshtml" />
     <Content Include="Views\Cadastro\Produto.cshtml" />
-    <Content Include="Views\CadGrupoProduto\Index.cshtml" />
-    <Content Include="Views\Grafico\Grafico.cshtml" />
     <Content Include="Views\RelatorioUsuario\Index.cshtml" />
-    <Content Include="Views\RelatorioGrupoUsuario\ListaGrupoUsuario.cshtml" />
+    <Content Include="Views\RelatorioGrupoUsuario\Index.cshtml" />
     <Content Include="Views\Operacao\EntradaEstoque.cshtml" />
     <Content Include="Views\Conta\Login.cshtml" />
     <Content Include="Views\Shared\_Cadastro.cshtml" />
-    <Content Include="Views\CadUnidadeMedida\Index.cshtml" />
     <Content Include="Views\CadPerfil\Index.cshtml" />
     <Content Include="Views\CadCargo\Index.cshtml" />
   </ItemGroup>
