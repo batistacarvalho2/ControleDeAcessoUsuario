@@ -196,6 +196,7 @@
     <Compile Include="Controllers\RelatorioController.cs" />
     <Compile Include="Controllers\Relatorio\RelatorioGrupoController.cs" />
     <Compile Include="Controllers\Relatorio\RelatorioUsuarioController.cs" />
+    <Compile Include="Controllers\Relatorio\RelatorioGrupoController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -221,12 +222,12 @@
     <Content Include="Content\Cadastro\Perfil.css" />
     <Content Include="Content\Cadastro\UnidadeMedida.css" />
     <Content Include="Content\Cadastro\Usuario.css" />
+    <Content Include="Content\Relatorio\ListaGrupo.css" />
     <Content Include="Content\Relatorio\ListaUsuario.css" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
-    <Content Include="Rotativa\wkhtmltopdf.exe" />
     <Content Include="Scripts\bootbox.min.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
@@ -266,6 +267,7 @@
     <Content Include="Views\Cadastro\Produto.cshtml" />
     <Content Include="Views\RelatorioUsuario\Index.cshtml" />
     <Content Include="Views\RelatorioGrupoUsuario\Index.cshtml" />
+    <Content Include="Views\RelatorioGrupo\ListaGrupo.cshtml" />
     <Content Include="Views\Operacao\EntradaEstoque.cshtml" />
     <Content Include="Views\Conta\Login.cshtml" />
     <Content Include="Views\Shared\_Cadastro.cshtml" />
@@ -287,12 +289,6 @@
     <None Include="packages.config" />
     <Content Include="Scripts\jquery-3.4.1.slim.min.map" />
     <Content Include="Scripts\jquery-3.4.1.min.map" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Rotativa\Rotativa.csproj">
-      <Project>{d93faa11-31f0-4629-b53c-aa8680283529}</Project>
-      <Name>Rotativa</Name>
-    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

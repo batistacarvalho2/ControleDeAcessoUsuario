@@ -28,9 +28,7 @@ namespace ControleUser.web.Models
                 using (var comando = new NpgsqlCommand())
                 {
                     comando.Connection = conexao;
-                    comando.CommandText = string.Format(@"SELECT * FROM perfil 
-                                                                    ORDER BY nome");
-
+                    comando.CommandText = string.Format(@"SELECT * FROM perfil ORDER BY nome");
 
                     var reader = comando.ExecuteReader();
                     while (reader.Read())

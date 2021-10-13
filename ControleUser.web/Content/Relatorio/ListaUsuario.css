@@ -26,12 +26,6 @@
     width: 450px;
 }
 
-
-#cadastro {
-    width: 80%;
-    margin: 0 auto;
-}
-
 tr {
     page-break-inside: avoid;
 }

@@ -1,5 +1,4 @@
 ﻿using ControleUser.web.Models;
-using Rotativa;
 using System.Web.Mvc;
 
 namespace ControleUser.web.Controllers
