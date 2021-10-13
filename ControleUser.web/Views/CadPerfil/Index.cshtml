@@ -56,7 +56,7 @@
         <div class="form-group">
             @Html.Label("txt_usuarioProprietario", "Usuario Proprietario", new { @class = "col-md-3 control-label" })
             <div class="col-md-6">
-                @Html.TextBox("txt_usuarioProprietario", null, new { @class = "form-control" })
+                @Html.DropDownList("txt_usuarioProprietario", new SelectList(ViewBag.ListaUsuario, "Id", "Nome"), new { @class = "col-md-6 control-label" })
             </div>
         </div>
         <div class="form-group">

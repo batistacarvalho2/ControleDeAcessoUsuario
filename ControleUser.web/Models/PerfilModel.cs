@@ -12,7 +12,7 @@ namespace ControleUser.web.Models
         public int Id { get; set; }
         [Required(ErrorMessage = "Preencha o nome.")]
         public string Nome { get; set; }
-        [Required(ErrorMessage = "Preencha o Usuario Proprietario.")]
+        public int IdUsuario { get; set; }
         public string UsuarioProprietario { get; set; }
         public DateTime DataCriacao { get; set; }
         public bool Ativo { get; set; }
@@ -52,9 +52,12 @@ namespace ControleUser.web.Models
                     var pos = (pagina - 1) * tamPagina;
 
                     comando.Connection = conexao;
-                    comando.CommandText = string.Format(@"SELECT * FROM perfil 
-                                                                    ORDER BY nome
+                    comando.CommandText = string.Format(@"select p.id, p.nome, u.nome as usuarioProprietario, p.data_criacao, p.ativo, p.id_usuario, u.nome 
+                                                                    from perfil p
+                                                                    inner join usuario u
+                                                                    on u.id = p.id_usuario
                                                                     OFFSET {0} ROWS FETCH NEXT {1} ROWS ONLY", pos > 0 ? pos - 1 : 0, tamPagina);
+
                     var reader = comando.ExecuteReader();
 
                     while (reader.Read())
@@ -63,9 +66,10 @@ namespace ControleUser.web.Models
                         {
                             Id = (int)reader["id"],
                             Nome = (string)reader["nome"],
-                            UsuarioProprietario = (string)reader["usuario_proprietario"],
+                            IdUsuario = (int)reader["id_usuario"],
+                            UsuarioProprietario = (string)reader["usuarioProprietario"],
                             DataCriacao = (DateTime)reader["data_criacao"],
-                            Ativo = (bool)reader["ativo"],
+                            Ativo = (bool)reader["ativo"]
                         });
                     }
                 }
@@ -185,16 +189,16 @@ namespace ControleUser.web.Models
         private bool IncluirRegistro(PerfilModel model, NpgsqlConnection conexao)
         {
             var queryResult = $@"insert into perfil
-                                            (nome, usuario_proprietario, data_criacao, ativo)
+                                            (nome, data_criacao, ativo, id_usuario)
                                         values
-                                            (@Nome, @usuario_proprietario, @data_criacao, @Ativo)";
+                                            (@Nome,  @data_criacao, @Ativo, @id_usuario)";
 
             using (var comando = new NpgsqlCommand(queryResult, conexao))
             {
                 if (model == null)
                 {
                     comando.Parameters.AddWithValue("Nome", NpgsqlDbType.Varchar, Nome);
-                    comando.Parameters.AddWithValue("Usuario_proprietario", NpgsqlDbType.Varchar, UsuarioProprietario);
+                    comando.Parameters.AddWithValue("id_usuario", NpgsqlDbType.Integer, IdUsuario);
                     comando.Parameters.AddWithValue("Data_criacao", NpgsqlDbType.Timestamp, DateTime.Now);
                     comando.Parameters.AddWithValue("Ativo", NpgsqlDbType.Boolean, this.Ativo);
                     comando.Prepare();
@@ -211,15 +215,15 @@ namespace ControleUser.web.Models
         {
             var queryResult = $@"update perfil set
                                         nome = @nome,
-                                        usuario_proprietario = @usuario_proprietario,
-                                        ativo = @ativo
+                                        ativo = @ativo,
+                                        id_usuario = id_usuario
                                    where
                                         id = @id";
 
             using (var comando = new NpgsqlCommand(queryResult, conexao))
             {
                 comando.Parameters.AddWithValue("nome", NpgsqlDbType.Varchar, model.Nome);
-                comando.Parameters.AddWithValue("usuario_proprietario", NpgsqlDbType.Varchar, model.UsuarioProprietario);
+                comando.Parameters.AddWithValue("id_usuario", NpgsqlDbType.Integer, model.IdUsuario);
                 comando.Parameters.AddWithValue("ativo", NpgsqlDbType.Boolean, model.Ativo);
                 comando.Parameters.AddWithValue("id", NpgsqlDbType.Integer, model.Id);
                 comando.Prepare();
