@@ -28,7 +28,10 @@ namespace ControleUser.web.Models
                 using (var comando = new NpgsqlCommand())
                 {
                     comando.Connection = conexao;
-                    comando.CommandText = string.Format(@"SELECT * FROM perfil ORDER BY nome");
+                    comando.CommandText = string.Format(@"select p.id, p.nome, u.nome as usuarioProprietario, p.data_criacao, p.ativo
+                                                                    from perfil p
+                                                                    inner join usuario u
+                                                                    on u.id = p.id_usuario");
 
                     var reader = comando.ExecuteReader();
                     while (reader.Read())
@@ -37,9 +40,9 @@ namespace ControleUser.web.Models
                         {
                             Id = (int)reader["id"],
                             Nome = (string)reader["nome"],
-                            UsuarioProprietario = (string)reader["usuario_proprietario"],
+                            UsuarioProprietario = (string)reader["usuarioProprietario"],
                             DataCriacao = (DateTime)reader["data_criacao"],
-                            Ativo = (bool)reader["ativo"],
+                            Ativo = (bool)reader["ativo"]
                         });
                     }
                 }

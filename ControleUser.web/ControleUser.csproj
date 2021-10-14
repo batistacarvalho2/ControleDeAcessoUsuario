@@ -199,7 +199,6 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Helpers\CriptoHelper.cs" />
-    <Compile Include="Models\GrupoProdutoModel.cs" />
     <Compile Include="Models\RelatorioGrupoModel.cs" />
     <Compile Include="Models\RelatorioUsuarioModel.cs" />
     <Compile Include="Models\LoginViewModel.cs" />

@@ -21,10 +21,6 @@ namespace ControleUser.web.Controllers
             ViewBag.PaginaAtual = 1;
 
             var lista = UsuarioModel.RecuperarLista(ViewBag.PaginaAtual, _quantMaxLinhasPorPagina);
-            var quant = GrupoProdutoModel.RecuperarQuantidade();
-
-            var difQuantPaginas = (quant % ViewBag.QuantMaxLinhasPorPagina) > 0 ? 1 : 0;
-            ViewBag.QuantPaginas = (quant / ViewBag.QuantMaxLinhasPorPagina) + difQuantPaginas;
 
             return View(lista);
 
@@ -76,12 +72,11 @@ namespace ControleUser.web.Controllers
                         if (!model.ValidaLogin(model))
                         {
                             ModelState.AddModelError("Login", "Login já cadastrado!");
-                             return Json(new { Resultado = resultado, Mensagens = mensagens, IdSalvo = idSalvo });
-                           // return Json(new { StatusCode = 400, Data = model, ErrorMessage = "Usuário/Email já cadastrado!" });
+                            return Json(new { Resultado = resultado, Mensagens = mensagens, IdSalvo = idSalvo });
+                            // return Json(new { StatusCode = 400, Data = model, ErrorMessage = "Usuário/Email já cadastrado!" });
                             //return RedirectToAction("Index", new { login });
 
                         }
-
 
                         if (!model.ValidaEmail(model))
                         {
@@ -99,7 +94,7 @@ namespace ControleUser.web.Controllers
                     throw;
                 }
             }
-            // return Json(new { StatusCode = 200, Data = model });
+            //return Json(new { StatusCode = 200, Data = model });
             return Json(new { Resultado = resultado, Mensagens = mensagens, IdSalvo = idSalvo });
         }
     }

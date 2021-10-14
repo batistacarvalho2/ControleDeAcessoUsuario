@@ -98,9 +98,9 @@ namespace ControleUser.web.Models
                         {
                             Id = (int)reader["id"],
                             Nome = (string)reader["nome"],
-                            UsuarioProprietario = (string)reader["usuario_proprietario"],
+                            IdUsuario = (int)reader["id_usuario"],
                             DataCriacao = (DateTime)reader["data_criacao"],
-                            Ativo = (bool)reader["ativo"],
+                            Ativo = (bool)reader["ativo"]
                         });
                     }
                 }
@@ -132,7 +132,7 @@ namespace ControleUser.web.Models
                         {
                             Id = (int)reader["id"],
                             Nome = (string)reader["nome"],
-                            UsuarioProprietario = (string)reader["usuario_proprietario"],
+                            IdUsuario = (int)reader["id_usuario"],
                             DataCriacao = (DateTime)reader["data_criacao"],
                             Ativo = (bool)reader["ativo"],
                         };
