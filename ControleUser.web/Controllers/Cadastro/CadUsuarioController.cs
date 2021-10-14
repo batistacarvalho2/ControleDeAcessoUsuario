@@ -12,6 +12,7 @@ namespace ControleUser.web.Controllers
         private const int _quantMaxLinhasPorPagina = 100;
         private const string _senhaPadrao = "{$127,$188}";
 
+        [AllowAnonymous]
         public ActionResult Index()
         {
             ViewBag.ListaPerfil = PerfilModel.RecuperarListaAtivos();
@@ -63,9 +64,9 @@ namespace ControleUser.web.Controllers
             {
                 try
                 {
-                    if (model.Senha == _senhaPadrao)
+                    if (model.Senha == "")
                     {
-                        model.Senha = "";
+                        model.Senha = _senhaPadrao;
                     }
                     if (model.Id == 0)
                     {
@@ -83,7 +84,6 @@ namespace ControleUser.web.Controllers
                             return Json(new { StatusCode = 400, Data = model, ErrorMessage = "Usuário/Email já cadastrado!" });
                         }
                     }
-
                     if (!model.Salvar(model))
                     {
                         return Json(new { StatusCode = 400, Data = model, ErrorMessage = "Erro ao cadastrar/atualizar os dados do Usuário" });

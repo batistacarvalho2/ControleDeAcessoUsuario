@@ -216,14 +216,14 @@ namespace ControleUser.web.Models
             var queryResult = $@"update perfil set
                                         nome = @nome,
                                         ativo = @ativo,
-                                        id_usuario = id_usuario
+                                        id_usuario = @id_usuario
                                    where
                                         id = @id";
 
             using (var comando = new NpgsqlCommand(queryResult, conexao))
             {
                 comando.Parameters.AddWithValue("nome", NpgsqlDbType.Varchar, model.Nome);
-                comando.Parameters.AddWithValue("id_usuario", NpgsqlDbType.Integer, model.IdUsuario);
+                comando.Parameters.AddWithValue("id_usuario", NpgsqlDbType.Integer, this.IdUsuario);
                 comando.Parameters.AddWithValue("ativo", NpgsqlDbType.Boolean, model.Ativo);
                 comando.Parameters.AddWithValue("id", NpgsqlDbType.Integer, model.Id);
                 comando.Prepare();

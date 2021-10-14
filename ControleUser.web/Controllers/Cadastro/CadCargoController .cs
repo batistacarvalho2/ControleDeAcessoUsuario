@@ -13,7 +13,8 @@ namespace ControleUser.web.Controllers
 
             private const int _quantMaxLinhasPorPagina = 100;
 
-            public ActionResult Index()
+        [AllowAnonymous]
+        public ActionResult Index()
             {
                 ViewBag.QuantMaxLinhasPorPagina = _quantMaxLinhasPorPagina;
                 ViewBag.PaginaAtual = 1;
