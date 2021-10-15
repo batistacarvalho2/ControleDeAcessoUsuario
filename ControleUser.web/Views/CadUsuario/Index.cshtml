@@ -37,8 +37,11 @@
                     <td>@ativo</td>
                     <td>
                         <a class="btn btn-primary btn-alterar" role="button"><i class="glyphicon glyphicon-pencil"></i> Alterar</a>
-                        <a class="btn btn-danger btn-excluir" role="button"><i class="glyphicon glyphicon-trash"></i> Excluir</a>
-                    </td>
+                        @if (User.IsInRole("Administrador"))
+                        {
+                            <a class="btn btn-danger btn-excluir" role="button"><i class="glyphicon glyphicon-trash"></i> Excluir</a>
+                        }
+                        </td>
                 </tr>
             }
             else
@@ -60,8 +63,16 @@
         <div class="form-group">
             @Html.Label("txt_login", "Login", new { @class = "col-md-3 control-label" })
             <div class="col-md-6">
-                @Html.TextBox("txt_login", null, new { @class = "form-control" })
-                @Html.ValidationMessage("login", null, new { @class = "text-danger" })
+                @if (User.IsInRole("Administrador"))
+                {
+                    @Html.TextBox("txt_login", null, new { @class = "form-control" })
+                    @Html.ValidationMessage("login", null, new { @class = "text-danger" })
+                }
+                else
+                {
+                    @Html.TextBox("txt_login", null, new { disabled = "disabled", @class = "form-control" })
+                    @Html.ValidationMessage("login", null, new { @class = "text-danger" })
+                }
             </div>
         </div>
         <div class="form-group">

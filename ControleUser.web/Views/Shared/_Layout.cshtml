@@ -28,9 +28,14 @@
                                 <span class="caret"></span>
                             </a>
                             <ul class="dropdown-menu">
+
                                 <li>@Html.ActionLink("Cadastro Usuario", "Index", "CadUsuario")</li>
-                                <li>@Html.ActionLink("Perfil de Acesso", "Index", "CadPerfil")</li>
-                                <li>@Html.ActionLink("Cadastro Cargo", "Index", "CadCargo")</li>
+
+                                @if (User.IsInRole("Administrador"))
+                                {
+                                    <li>@Html.ActionLink("Perfil de Acesso", "Index", "CadPerfil")</li>
+                                    <li>@Html.ActionLink("Cadastro Cargo", "Index", "CadCargo")</li>
+                                }
                             </ul>
                         </li>
                         <li>
@@ -68,7 +73,7 @@
         @RenderBody()
         <hr />
         <footer>
-            <p>&copy; @DateTime.Now.Year - Controle de Estoque</p>
+            <p>&copy; @DateTime.Now.Year - Sistema Dados de Controle de Acesso</p>
         </footer>
     </div>
 

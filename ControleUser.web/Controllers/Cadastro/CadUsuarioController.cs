@@ -15,27 +15,37 @@ namespace ControleUser.web.Controllers
         [AllowAnonymous]
         public ActionResult Index()
         {
+            var usuarioLogado = ObtenhaUsuarioPornome(HttpContext.User.Identity.Name);
+
             ViewBag.ListaPerfil = PerfilModel.RecuperarListaAtivos();
             ViewBag.ListaCargo = CargoModel.RecuperarListaCargo();
             ViewBag.SenhaPadrao = _senhaPadrao;
             ViewBag.QuantMaxLinhasPorPagina = _quantMaxLinhasPorPagina;
-            ViewBag.PaginaAtual = 1;
 
-            var lista = UsuarioModel.RecuperarLista(ViewBag.PaginaAtual, _quantMaxLinhasPorPagina);
+            var lista = UsuarioModel.RecuperarLista(usuarioLogado);
 
             return View(lista);
-
         }
 
         [HttpPost]
+        [AllowAnonymous]
+        private UsuarioModel ObtenhaUsuarioPornome(string name)
+        {
+            return UsuarioModel.RecuperarPeloNome(name);
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
         [ValidateAntiForgeryToken]
         public JsonResult UsuarioPagina(int pagina)
         {
-            var lista = UsuarioModel.RecuperarLista(pagina, _quantMaxLinhasPorPagina);
+            var usuarioLogado = ObtenhaUsuarioPornome(HttpContext.User.Identity.Name);
+            var lista = UsuarioModel.RecuperarLista(usuarioLogado);
             return Json(lista);
         }
 
         [HttpPost]
+        [AllowAnonymous]
         public ActionResult RecuperarUsuario(int id)
         {
             return Json(UsuarioModel.RecuperarPeloId(id));
@@ -46,9 +56,9 @@ namespace ControleUser.web.Controllers
         {
             return Json(UsuarioModel.ExcluirPeloId(id));
         }
-
-
+        
         [HttpPost]
+        [AllowAnonymous]
         public ActionResult SalvarUsuario(UsuarioModel model)
         {
             var resultado = "OK";
@@ -74,9 +84,6 @@ namespace ControleUser.web.Controllers
                         {
                             ModelState.AddModelError("Login", "Login já cadastrado!");
                             return Json(new { Resultado = resultado, Mensagens = mensagens, IdSalvo = idSalvo });
-                            // return Json(new { StatusCode = 400, Data = model, ErrorMessage = "Usuário/Email já cadastrado!" });
-                            //return RedirectToAction("Index", new { login });
-
                         }
 
                         if (!model.ValidaEmail(model))
@@ -94,7 +101,6 @@ namespace ControleUser.web.Controllers
                     throw;
                 }
             }
-            //return Json(new { StatusCode = 200, Data = model });
             return Json(new { Resultado = resultado, Mensagens = mensagens, IdSalvo = idSalvo });
         }
     }

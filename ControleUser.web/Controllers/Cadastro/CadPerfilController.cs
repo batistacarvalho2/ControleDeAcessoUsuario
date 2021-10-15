@@ -36,7 +36,6 @@ namespace ControleUser.web.Controllers
 
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public JsonResult RecuperarPerfil(int id)
         {
             return Json(PerfilModel.RecuperarPeloId(id));

@@ -16,8 +16,11 @@
     <section id="cadastro_conteudo">
         <div id="cabecalho_grid" class="row">
             <div class="col-md-12">
-                <a id="btn_incluir" class="btn btn-success" role="button"><i class="glyphicon glyphicon-plus"></i> Incluir</a>
-            </div>
+                @if (User.IsInRole("Administrador"))
+                {
+                    <a id="btn_incluir" class="btn btn-success" role="button"><i class="glyphicon glyphicon-plus"></i> Incluir</a>
+                }
+                </div>
         </div>
         <div class="row">
             <div class="col-md-12">

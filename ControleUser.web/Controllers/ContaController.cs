@@ -24,12 +24,10 @@ namespace ControleUser.web.Controllers
                 return View(login);
             }
 
-            //var achou = (login.Usuario == "joao" && login.Senha == "123");
             var usuario = (UsuarioModel.ValidarUsuario(login.Usuario, login.Senha));
 
             if (usuario != null)
             {
-                // FormsAuthentication.SetAuthCookie(usuario.Nome, login.LembrarMe);
                 var tiket = FormsAuthentication.Encrypt(new FormsAuthenticationTicket(
                     1, usuario.Nome, DateTime.Now, DateTime.Now.AddHours(12), login.LembrarMe, PerfilModel.RecuperarPeloId(usuario.IdPerfil).Nome));
                 var cookie = new HttpCookie(FormsAuthentication.FormsCookieName, tiket);

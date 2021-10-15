@@ -100,7 +100,7 @@ namespace ControleUser.web.Models
             return ret;
         }
 
-        public static List<UsuarioModel> RecuperarLista(int pagina, int tamPagina)
+        public static List<UsuarioModel> RecuperarLista(UsuarioModel usuarioLogado)
         {
             var ret = new List<UsuarioModel>();
 
@@ -112,12 +112,14 @@ namespace ControleUser.web.Models
 
                 using (var comando = new NpgsqlCommand())
                 {
-                    var pos = (pagina - 1) * tamPagina;
 
                     comando.Connection = conexao;
-                    comando.CommandText = string.Format(@"SELECT * FROM usuario
+                    comando.CommandText = string.Format($@"SELECT * FROM usuario
                                                 inner join cargo_funcao on usuario.id_cargo = cargo_funcao.id 
-                                                ORDER BY usuario.nome OFFSET {0} ROWS FETCH NEXT {1} ROWS ONLY", pos > 0 ? pos - 1 : 0, tamPagina);
+                                                { (usuarioLogado.Administrador ? string.Empty : $"Where usuario.id = '{usuarioLogado.Id}'")}
+                                                ORDER BY usuario.nome ");
+
+                    // 
 
                     var reader = comando.ExecuteReader();
                     while (reader.Read())
@@ -192,6 +194,42 @@ namespace ControleUser.web.Models
                     comando.Connection = conexao;
                     comando.CommandText = "select * from usuario where (id =@id)";
                     comando.Parameters.Add("@id", NpgsqlDbType.Integer).Value = id;
+                    var reader = comando.ExecuteReader();
+
+                    if (reader.Read())
+                    {
+                        ret = new UsuarioModel
+                        {
+                            Id = (int)reader["id"],
+                            Nome = (string)reader["nome"],
+                            Email = (string)reader["email"],
+                            Login = (string)reader["login"],
+                            IdCargo = (int)reader["id_cargo"],
+                            IdPerfil = (int)reader["id_perfil"],
+                            Administrador = (bool)reader["administrador"],
+                            Ativo = (bool)reader["ativo"]
+                        };
+                    }
+                }
+            }
+            return ret;
+        }
+
+
+        public static UsuarioModel RecuperarPeloNome(string nome)
+        {
+            UsuarioModel ret = null;
+
+            using (var conexao = new NpgsqlConnection())
+            {
+                conexao.ConnectionString = ConfigurationManager.ConnectionStrings["principal"].ConnectionString;
+                conexao.Open();
+
+                using (var comando = new NpgsqlCommand())
+                {
+                    comando.Connection = conexao;
+                    comando.CommandText = "select * from usuario where (nome =@nome)";
+                    comando.Parameters.Add("@nome", NpgsqlDbType.Varchar).Value = nome;
                     var reader = comando.ExecuteReader();
 
                     if (reader.Read())
