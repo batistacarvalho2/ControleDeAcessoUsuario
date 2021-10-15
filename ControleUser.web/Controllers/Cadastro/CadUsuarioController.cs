@@ -10,7 +10,7 @@ namespace ControleUser.web.Controllers
     public class CadUsuarioController : Controller
     {
         private const int _quantMaxLinhasPorPagina = 100;
-        private const string _senhaPadrao = "{$127,$188}";
+        private const string _senhaPadrao = "{$123,$321}";
 
         [AllowAnonymous]
         public ActionResult Index()
@@ -20,7 +20,6 @@ namespace ControleUser.web.Controllers
             ViewBag.ListaPerfil = PerfilModel.RecuperarListaAtivos();
             ViewBag.ListaCargo = CargoModel.RecuperarListaCargo();
             ViewBag.SenhaPadrao = _senhaPadrao;
-            ViewBag.QuantMaxLinhasPorPagina = _quantMaxLinhasPorPagina;
 
             var lista = UsuarioModel.RecuperarLista(usuarioLogado);
 
@@ -32,16 +31,6 @@ namespace ControleUser.web.Controllers
         private UsuarioModel ObtenhaUsuarioPornome(string name)
         {
             return UsuarioModel.RecuperarPeloNome(name);
-        }
-
-        [HttpPost]
-        [AllowAnonymous]
-        [ValidateAntiForgeryToken]
-        public JsonResult UsuarioPagina(int pagina)
-        {
-            var usuarioLogado = ObtenhaUsuarioPornome(HttpContext.User.Identity.Name);
-            var lista = UsuarioModel.RecuperarLista(usuarioLogado);
-            return Json(lista);
         }
 
         [HttpPost]

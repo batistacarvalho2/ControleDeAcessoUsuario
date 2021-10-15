@@ -10,30 +10,13 @@ namespace ControleUser.web.Controllers
     [Authorize(Roles = "Administrador")]
     public class CadPerfilController : Controller
     {
-
-        private const int _quantMaxLinhasPorPagina = 100;
-
         [AllowAnonymous]
         public ActionResult Index()
         {
-            ViewBag.QuantMaxLinhasPorPagina = _quantMaxLinhasPorPagina;
-            ViewBag.PaginaAtual = 1;
             ViewBag.ListaUsuario = UsuarioModel.RecuperarListaUsuario();
-
-            var lista = PerfilModel.RecuperarLista(ViewBag.PaginaAtual, _quantMaxLinhasPorPagina);
-            var quant = PerfilModel.RecuperarQuantidade();
-
+            var lista = PerfilModel.RecuperarLista();
             return View(lista);
         }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public JsonResult PerfilPagina(int pagina)
-        {
-            var lista = PerfilModel.RecuperarLista(pagina, _quantMaxLinhasPorPagina);
-            return Json(lista);
-        }
-
 
         [HttpPost]
         public JsonResult RecuperarPerfil(int id)

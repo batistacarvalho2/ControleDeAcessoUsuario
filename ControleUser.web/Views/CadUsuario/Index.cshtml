@@ -20,12 +20,8 @@
 
 @section LinhaGrid{
     @{
-        var linha = 0;
         foreach (var item in Model)
         {
-            linha++;
-            if (linha < ViewBag.QuantMaxLinhasPorPagina)
-            {
                 var ativo = (item.Ativo ? "SIM" : "NÃO");
                 var admin = (item.Administrador ? "SIM" : "NÃO");
                 <tr data-id="@item.Id">
@@ -41,13 +37,8 @@
                         {
                             <a class="btn btn-danger btn-excluir" role="button"><i class="glyphicon glyphicon-trash"></i> Excluir</a>
                         }
-                        </td>
+                    </td>
                 </tr>
-            }
-            else
-            {
-                break;
-            }
         }
     }
 }
@@ -93,20 +84,22 @@
                 @Html.TextBox("txt_senha", null, new { @class = "form-control", type = "password" })
             </div>
         </div>
-        <!--mudar para o menu de papeis-->
+        @if (User.IsInRole("Administrador"))
+        {
+            <div class="form-group">
+                @Html.Label("cbx_admin", "Administrador", new { @class = "col-md-3 control-label" })
+                <div class="col-md-9">
+                    @Html.CheckBox("cbx_admin")
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.Label("cbx_ativo", "Ativo", new { @class = "col-md-3 control-label" })
+                <div class="col-md-9">
+                    @Html.CheckBox("cbx_ativo")
+                </div>
+            </div>
+        }
 
-        <div class="form-group">
-            @Html.Label("cbx_admin", "Administrador", new { @class = "col-md-3 control-label" })
-            <div class="col-md-9">
-                @Html.CheckBox("cbx_admin")
-            </div>
-        </div>
-        <div class="form-group">
-            @Html.Label("cbx_ativo", "Ativo", new { @class = "col-md-3 control-label" })
-            <div class="col-md-9">
-                @Html.CheckBox("cbx_ativo")
-            </div>
-        </div>
     </div>
 }
 

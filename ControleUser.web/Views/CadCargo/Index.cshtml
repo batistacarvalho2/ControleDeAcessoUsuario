@@ -16,27 +16,19 @@
 
 @section LinhaGrid{
     @{
-        var linha = 0;
         foreach (var item in Model)
         {
-            linha++;
-            if (linha < ViewBag.QuantMaxLinhasPorPagina)
-            {
-                <tr data-id="@item.Id">
-                    <td>@item.Cargo</td>
-                    <td>
-                        <a class="btn btn-primary btn-alterar" role="button"><i class="glyphicon glyphicon-pencil"></i> Alterar</a>
-                        <a class="btn btn-danger btn-excluir" role="button"><i class="glyphicon glyphicon-trash"></i> Excluir</a>
-                    </td>
-                </tr>
-            }
-            else
-            {
-                break;
-            }
+            <tr data-id="@item.Id">
+                <td>@item.Cargo</td>
+                <td>
+                    <a class="btn btn-primary btn-alterar" role="button"><i class="glyphicon glyphicon-pencil"></i> Alterar</a>
+                    <a class="btn btn-danger btn-excluir" role="button"><i class="glyphicon glyphicon-trash"></i> Excluir</a>
+                </td>
+            </tr>
         }
     }
 }
+
 
 @section CamposCadastro{
     <div class="row">

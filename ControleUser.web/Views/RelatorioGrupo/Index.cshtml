@@ -25,11 +25,12 @@
         @{
             foreach (var item in Model)
             {
+                var ativo = (item.Ativo ? "SIM" : "NÃO");
                 <tr>
                     <td>@item.Nome</td>
                     <td>@item.UsuarioProprietario</td>
                     <td>@item.DataCriacao</td>
-                    <td>@item.Ativo</td>
+                    <td>@ativo</td>
                 </tr>
             }
         }

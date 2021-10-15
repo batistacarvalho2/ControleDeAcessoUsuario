@@ -13,28 +13,7 @@ namespace ControleUser.web.Models
             [Required(ErrorMessage = "Preencha o Cargo.")]
             public string Cargo { get; set; }
 
-
-            public static int RecuperarQuantidade()
-            {
-                var ret = 0;
-
-                using (var conexao = new NpgsqlConnection())
-                {
-                    conexao.ConnectionString = ConfigurationManager.ConnectionStrings["principal"].ConnectionString;
-                    conexao.Open();
-
-                    using (var comando = new NpgsqlCommand())
-                    {
-                        comando.Connection = conexao;
-                        comando.CommandText = "SELECT COUNT(*) FROM cargo_funcao";
-                        ret = Convert.ToInt32(comando.ExecuteScalar());
-
-                    }
-                }
-                return ret;
-            }
-
-            public static List<CargoModel> RecuperarLista(int pagina, int tamPagina)
+            public static List<CargoModel> RecuperarLista()
             {
                 var ret = new List<CargoModel>();
 
@@ -45,12 +24,8 @@ namespace ControleUser.web.Models
 
                     using (var comando = new NpgsqlCommand())
                     {
-                        var pos = (pagina - 1) * tamPagina;
-
                         comando.Connection = conexao;
-                        comando.CommandText = string.Format(@"SELECT * FROM cargo_funcao
-                                                                        ORDER BY cargo 
-                                                                        OFFSET {0} ROWS FETCH NEXT {1} ROWS ONLY", pos > 0 ? pos - 1 : 0, tamPagina);
+                        comando.CommandText = string.Format("SELECT * FROM cargo_funcao ORDER BY cargo");
                         var reader = comando.ExecuteReader();
 
                         while (reader.Read())
@@ -78,7 +53,7 @@ namespace ControleUser.web.Models
                 using (var comando = new NpgsqlCommand())
                 {
                     comando.Connection = conexao;
-                    comando.CommandText = string.Format("SELECT * FROM cargo_funcao  order by cargo");
+                    comando.CommandText = string.Format("SELECT * FROM cargo_funcao order by cargo");
                     var reader = comando.ExecuteReader();
 
                     while (reader.Read())
@@ -208,7 +183,6 @@ namespace ControleUser.web.Models
                 {
                     return false;
                 }
-
             }
         }
 

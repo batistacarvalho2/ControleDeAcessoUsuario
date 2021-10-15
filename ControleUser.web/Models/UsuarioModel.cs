@@ -36,24 +36,19 @@ namespace ControleUser.web.Models
         public static UsuarioModel ValidarUsuario(string login, string senha)
         {
             UsuarioModel ret = null;
-
-
             using (var conexao = new NpgsqlConnection())
             {
                 conexao.ConnectionString = ConfigurationManager.ConnectionStrings["principal"].ConnectionString;
                 conexao.Open();
 
-                NpgsqlCommand comando = new NpgsqlCommand(string.Format(
-                    "select * from usuario where login=@login and senha=@senha", login, CriptoHelper.HashMD5(senha)), conexao);
+                NpgsqlCommand comando = new NpgsqlCommand(string.Format("select * from usuario where login=@login and senha=@senha", login, CriptoHelper.HashMD5(senha)), conexao);
 
                 comando.Parameters.Add("@login", NpgsqlDbType.Varchar).Value = login;
                 comando.Parameters.Add("@senha", NpgsqlDbType.Varchar).Value = CriptoHelper.HashMD5(senha);
 
                 try
                 {
-                    //ret = ((long)comando.ExecuteScalar() > 0);
                     var reader = comando.ExecuteReader();
-
                     while (reader.Read())
                     {
                         ret = new UsuarioModel
@@ -80,31 +75,9 @@ namespace ControleUser.web.Models
             return ret;
         }
 
-        public static int RecuperarQuantidade()
-        {
-            var ret = 0;
-
-            using (var conexao = new NpgsqlConnection())
-            {
-                conexao.ConnectionString = ConfigurationManager.ConnectionStrings["principal"].ConnectionString;
-                conexao.Open();
-
-                using (var comando = new NpgsqlCommand())
-                {
-                    comando.Connection = conexao;
-                    comando.CommandText = "SELECT COUNT(*) FROM usuario";
-                    ret = Convert.ToInt32(comando.ExecuteScalar());
-
-                }
-            }
-            return ret;
-        }
-
         public static List<UsuarioModel> RecuperarLista(UsuarioModel usuarioLogado)
         {
             var ret = new List<UsuarioModel>();
-
-
             using (var conexao = new NpgsqlConnection())
             {
                 conexao.ConnectionString = ConfigurationManager.ConnectionStrings["principal"].ConnectionString;
@@ -112,14 +85,11 @@ namespace ControleUser.web.Models
 
                 using (var comando = new NpgsqlCommand())
                 {
-
                     comando.Connection = conexao;
                     comando.CommandText = string.Format($@"SELECT * FROM usuario
                                                 inner join cargo_funcao on usuario.id_cargo = cargo_funcao.id 
                                                 { (usuarioLogado.Administrador ? string.Empty : $"Where usuario.id = '{usuarioLogado.Id}'")}
                                                 ORDER BY usuario.nome ");
-
-                    // 
 
                     var reader = comando.ExecuteReader();
                     while (reader.Read())
@@ -145,8 +115,6 @@ namespace ControleUser.web.Models
         public static List<UsuarioModel> RecuperarListaUsuario()
         {
             var ret = new List<UsuarioModel>();
-
-
             using (var conexao = new NpgsqlConnection())
             {
                 conexao.ConnectionString = ConfigurationManager.ConnectionStrings["principal"].ConnectionString;
@@ -154,10 +122,8 @@ namespace ControleUser.web.Models
 
                 using (var comando = new NpgsqlCommand())
                 {
-                    comando.Connection = conexao;
-                   
+                    comando.Connection = conexao;                   
                     comando.CommandText = string.Format(@"SELECT * FROM usuario order by nome");
-
 
                     var reader = comando.ExecuteReader();
                     while (reader.Read())
@@ -172,7 +138,7 @@ namespace ControleUser.web.Models
                             IdCargo = (int)reader["id_cargo"],
                             IdPerfil = (int)reader["id_perfil"],
                             Administrador = (bool)reader["administrador"],
-                            Ativo = (bool)reader["ativo"],
+                            Ativo = (bool)reader["ativo"]
                         });
                     }
                 }
@@ -183,7 +149,6 @@ namespace ControleUser.web.Models
         public static UsuarioModel RecuperarPeloId(int id)
         {
             UsuarioModel ret = null;
-
             using (var conexao = new NpgsqlConnection())
             {
                 conexao.ConnectionString = ConfigurationManager.ConnectionStrings["principal"].ConnectionString;
@@ -193,9 +158,10 @@ namespace ControleUser.web.Models
                 {
                     comando.Connection = conexao;
                     comando.CommandText = "select * from usuario where (id =@id)";
-                    comando.Parameters.Add("@id", NpgsqlDbType.Integer).Value = id;
-                    var reader = comando.ExecuteReader();
 
+                    comando.Parameters.Add("@id", NpgsqlDbType.Integer).Value = id;
+
+                    var reader = comando.ExecuteReader();
                     if (reader.Read())
                     {
                         ret = new UsuarioModel
@@ -281,6 +247,7 @@ namespace ControleUser.web.Models
             using (var conexao = new NpgsqlConnection())
             {
                 conexao.ConnectionString = ConfigurationManager.ConnectionStrings["principal"].ConnectionString;
+
                 NpgsqlCommand comando = new NpgsqlCommand("select login from usuario where login = @login", conexao);
 
                 conexao.Open();
@@ -305,7 +272,6 @@ namespace ControleUser.web.Models
 
         public bool ValidaEmail(UsuarioModel email)
         {
-            // var id = RecuperarPeloId();
             using (var conexao = new NpgsqlConnection())
             {
                 conexao.ConnectionString = ConfigurationManager.ConnectionStrings["principal"].ConnectionString;
@@ -331,7 +297,7 @@ namespace ControleUser.web.Models
             }
         }
 
-        public bool Salvar(UsuarioModel model) //Apenas inclui os dados no banco!
+        public bool Salvar(UsuarioModel model)
         {
             if (model.Id == 0)
                 return SalvarUsuario();
@@ -390,7 +356,6 @@ namespace ControleUser.web.Models
 
         private bool AtualizaUsuario(UsuarioModel model)
         {
-
             using (var conexao = new NpgsqlConnection())
             {
                 conexao.ConnectionString = ConfigurationManager.ConnectionStrings["principal"].ConnectionString;
@@ -463,7 +428,6 @@ namespace ControleUser.web.Models
             using (var comando = new NpgsqlCommand(queryResult, conexao))
             {
                 conexao.Open();
-
                 comando.Parameters.AddWithValue("nome", NpgsqlDbType.Varchar, this.Nome);
                 comando.Parameters.AddWithValue("email", NpgsqlDbType.Varchar, this.Email);
                 comando.Parameters.AddWithValue("login", NpgsqlDbType.Varchar, this.Login);

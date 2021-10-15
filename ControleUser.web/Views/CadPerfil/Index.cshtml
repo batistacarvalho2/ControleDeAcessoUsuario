@@ -19,12 +19,8 @@
 
 @section LinhaGrid{
     @{
-        var linha = 0;
         foreach (var item in Model)
         {
-            linha++;
-            if (linha < ViewBag.QuantMaxLinhasPorPagina)
-            {
                 var ativo = (item.Ativo ? "SIM" : "NÃO");
                 <tr data-id="@item.Id">
                     <td>@item.Nome</td>
@@ -36,11 +32,6 @@
                         <a class="btn btn-danger btn-excluir" role="button"><i class="glyphicon glyphicon-trash"></i> Excluir</a>
                     </td>
                 </tr>
-            }
-            else
-            {
-                break;
-            }
         }
     }
 }

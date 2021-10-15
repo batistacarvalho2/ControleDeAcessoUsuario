@@ -18,27 +18,7 @@ namespace ControleUser.web.Models
         public bool Ativo { get; set; }
 
 
-        public static int RecuperarQuantidade()
-        {
-            var ret = 0;
-
-            using (var conexao = new NpgsqlConnection())
-            {
-                conexao.ConnectionString = ConfigurationManager.ConnectionStrings["principal"].ConnectionString;
-                conexao.Open();
-
-                using (var comando = new NpgsqlCommand())
-                {
-                    comando.Connection = conexao;
-                    comando.CommandText = "SELECT COUNT(*) FROM perfil";
-                    ret = Convert.ToInt32(comando.ExecuteScalar());
-
-                }
-            }
-            return ret;
-        }
-
-        public static List<PerfilModel> RecuperarLista(int pagina, int tamPagina)
+        public static List<PerfilModel> RecuperarLista()
         {
             var ret = new List<PerfilModel>();
 
@@ -49,14 +29,11 @@ namespace ControleUser.web.Models
 
                 using (var comando = new NpgsqlCommand())
                 {
-                    var pos = (pagina - 1) * tamPagina;
-
                     comando.Connection = conexao;
                     comando.CommandText = string.Format(@"select p.id, p.nome, u.nome as usuarioProprietario, p.data_criacao, p.ativo, p.id_usuario, u.nome 
                                                                     from perfil p
                                                                     inner join usuario u
-                                                                    on u.id = p.id_usuario
-                                                                    OFFSET {0} ROWS FETCH NEXT {1} ROWS ONLY", pos > 0 ? pos - 1 : 0, tamPagina);
+                                                                    on u.id = p.id_usuario");
 
                     var reader = comando.ExecuteReader();
 
@@ -188,7 +165,7 @@ namespace ControleUser.web.Models
 
         private bool IncluirRegistro(PerfilModel model, NpgsqlConnection conexao)
         {
-            var queryResult = $@"insert into perfil
+            var queryResult = @"insert into perfil
                                             (nome, data_criacao, ativo, id_usuario)
                                         values
                                             (@Nome,  @data_criacao, @Ativo, @id_usuario)";
@@ -197,8 +174,8 @@ namespace ControleUser.web.Models
             {
                 if (model == null)
                 {
-                    comando.Parameters.AddWithValue("Nome", NpgsqlDbType.Varchar, Nome);
-                    comando.Parameters.AddWithValue("id_usuario", NpgsqlDbType.Integer, IdUsuario);
+                    comando.Parameters.AddWithValue("Nome", NpgsqlDbType.Varchar, this.Nome);
+                    comando.Parameters.AddWithValue("id_usuario", NpgsqlDbType.Integer, this.IdUsuario);
                     comando.Parameters.AddWithValue("Data_criacao", NpgsqlDbType.Timestamp, DateTime.Now);
                     comando.Parameters.AddWithValue("Ativo", NpgsqlDbType.Boolean, this.Ativo);
                     comando.Prepare();
@@ -213,7 +190,7 @@ namespace ControleUser.web.Models
 
         private bool Update(PerfilModel model, NpgsqlConnection conexao)
         {
-            var queryResult = $@"update perfil set
+            var queryResult = @"update perfil set
                                         nome = @nome,
                                         ativo = @ativo,
                                         id_usuario = @id_usuario
@@ -222,10 +199,10 @@ namespace ControleUser.web.Models
 
             using (var comando = new NpgsqlCommand(queryResult, conexao))
             {
-                comando.Parameters.AddWithValue("nome", NpgsqlDbType.Varchar, model.Nome);
+                comando.Parameters.AddWithValue("nome", NpgsqlDbType.Varchar, this.Nome);
                 comando.Parameters.AddWithValue("id_usuario", NpgsqlDbType.Integer, this.IdUsuario);
-                comando.Parameters.AddWithValue("ativo", NpgsqlDbType.Boolean, model.Ativo);
-                comando.Parameters.AddWithValue("id", NpgsqlDbType.Integer, model.Id);
+                comando.Parameters.AddWithValue("ativo", NpgsqlDbType.Boolean, this.Ativo);
+                comando.Parameters.AddWithValue("id", NpgsqlDbType.Integer, this.Id);
                 comando.Prepare();
 
                 if (comando.ExecuteNonQuery() > 0)
